@@ -1,8 +1,8 @@
 ---
 title: "Universitas Airlangga Theme"
 subtitle: "A Professional Quarto Presentation Template"
-author: "Your Name"
-institute: "Universitas Airlangga"
+author: "Rizqy Amelia Zein"
+institute: "Department of Psychology, Universitas Airlangga"
 date: today
 format: unair-revealjs
 ---
@@ -24,7 +24,7 @@ This is a sample presentation using the Universitas Airlangga theme.
 - UNAIR Blue primary color
 - Yellow accent highlights
 - Clean typography
-- Brand compliance
+- Compliance with the [brand standardization](https://drive.google.com/file/u/1/d/1KcRztcsJsI0zKPWvENze6Z8dyeXw6NWz/view?usp=sharing)
 :::
 
 ::: {.column}
@@ -110,7 +110,7 @@ ggplot(mtcars, aes(x = wt, y = mpg)) +
 
 ## Images
 
-![Sample visualization](https://via.placeholder.com/600x400/14497F/FFFFFF?text=UNAIR+Research)
+![Sample visualization](https://images.unsplash.com/photo-1626808642875-0aa545482dfb?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)
 
 Images automatically have subtle styling.
 
@@ -126,9 +126,9 @@ Inline equations work too: $E = mc^2$
 
 ## Blockquotes
 
-> "Excellence with Morality"
+> "When measure becomes a target it ceases to be a good measure."
 >
-> --- Universitas Airlangga
+> --- Goodhart's law
 
 ## Custom Styling
 
@@ -149,10 +149,10 @@ Sections help organize your presentation
 
 Contact:
 
-- Email: your.email@unair.ac.id
-- Website: www.unair.ac.id
-- Twitter: @unair_official
+- Email: [amelia.zein@psikologi.unair.ac.id](mailto:amelia.zein@psikologi.unair.ac.id)
+- Website: [https://rameliaz.github.io/](https://rameliaz.github.io/)
+- Discord: [@rameliaz](https://discord.com/users/807046335613632555)
 
 ::: {.callout-note}
-**Note:** Download this template at github.com/yourusername/quarto-unair-theme
+**Note:** Download this template at [github.com/rameliaz/quarto-unair-theme](https://github.com/rameliaz/quarto-unair-theme/tree/main)
 :::
