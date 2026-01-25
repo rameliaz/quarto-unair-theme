@@ -1,6 +1,6 @@
 # Universitas Airlangga Quarto Presentation Theme
 
-A professional Quarto Revealjs presentation theme following Universitas Airlangga's official 2025 corporate branding guidelines.
+A reproducible Quarto Revealjs presentation theme following Universitas Airlangga's official 2025 corporate branding guidelines.
 
 [![Quarto](https://img.shields.io/badge/Made%20with-Quarto-blue)](https://quarto.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -212,11 +212,10 @@ your-project/
 
 This theme follows **Universitas Airlangga Logo Guidelines 2025**:
 
-- ✅ Correct color usage (UNAIR Blue primary)
+- ✅ Official color usage (UNAIR Blue primary)
 - ✅ Proper logo placement and spacing  
 - ✅ Approved typography (Segoe UI/Inter)
-- ✅ Professional academic aesthetic
-- ✅ 15mm minimum clearance around logo
+- ✅ Reproducible and professional for academic presentation
 
 ## 💡 Tips for Best Results
 
