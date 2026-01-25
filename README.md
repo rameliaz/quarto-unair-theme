@@ -15,7 +15,7 @@ A professional Quarto Revealjs presentation theme following Universitas Airlangg
 
 ## 📸 Preview
 
-*[Screenshots will be added here]*
+[Snapshot](img/snapshot.gif)
 
 ## 🚀 Installation
 
