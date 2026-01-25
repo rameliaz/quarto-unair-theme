@@ -138,7 +138,7 @@ To host example presentation:
 5. Commit and push
 6. Settings → Pages → Source: "main branch /docs folder"
 
-Your example will be live at: `https://yourusername.github.io/quarto-unair-theme/`
+Your example will be live at: `https://rameliaz.github.io/quarto-unair-theme/`
 
 ## Step 10: Promote Your Theme
 
