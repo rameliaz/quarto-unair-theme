@@ -14,7 +14,7 @@ If you haven't already:
 ### Option A: Start New Project (Recommended)
 
 ```bash
-quarto use template yourusername/quarto-unair-theme
+quarto use template rameliaz/quarto-unair-theme
 ```
 
 This creates a new directory with everything set up.
@@ -23,7 +23,7 @@ This creates a new directory with everything set up.
 
 ```bash
 cd your-project
-quarto add yourusername/quarto-unair-theme
+quarto add rameliaz/quarto-unair-theme
 ```
 
 ## Step 3: Add Your Logos
@@ -84,7 +84,7 @@ Your presentation will open in your browser!
 
 - Check [README.md](README.md) for full documentation
 - View [example.qmd](example.qmd) for working examples
-- Open an [issue](https://github.com/yourusername/quarto-unair-theme/issues) if stuck
+- Open an [issue](https://github.com/rameliaz/quarto-unair-theme/issues) if stuck
 
 ## Next Steps
 

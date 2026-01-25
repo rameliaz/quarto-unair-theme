@@ -118,9 +118,9 @@ In your local repo, update all instances of `yourusername` in README.md:
 
 ```bash
 # Replace yourusername with your actual GitHub username
-sed -i 's/yourusername/YOUR_ACTUAL_USERNAME/g' README.md
-sed -i 's/yourusername/YOUR_ACTUAL_USERNAME/g' QUICKSTART.md
-sed -i 's/yourusername/YOUR_ACTUAL_USERNAME/g' example.qmd
+sed -i 's/yourusername/rameliaz/g' README.md
+sed -i 's/yourusername/rameliaz/g' QUICKSTART.md
+sed -i 's/yourusername/rameliaz/g' example.qmd
 
 git add .
 git commit -m "Update username in documentation"

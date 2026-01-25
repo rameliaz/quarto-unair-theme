@@ -22,7 +22,7 @@ A professional Quarto Revealjs presentation theme following Universitas Airlangg
 ### Quick Install (Recommended)
 
 ```bash
-quarto use template yourusername/quarto-unair-theme
+quarto use template rameliaz/quarto-unair-theme
 ```
 
 This will create a new directory with the template and example presentation.
@@ -30,7 +30,7 @@ This will create a new directory with the template and example presentation.
 ### Add to Existing Project
 
 ```bash
-quarto add yourusername/quarto-unair-theme
+quarto add rameliaz/quarto-unair-theme
 ```
 
 ## 📝 Usage
@@ -264,7 +264,7 @@ The UNAIR logo and brand elements remain property of Universitas Airlangga.
 
 ## 👏 Credits
 
-**Theme created by:** Rizqy Amelia Zein with the help of Claude Sonnet 3.5
+**Theme created by:** Rizqy Amelia Zein with Claude Sonnet 3.5
 **Based on:** Universitas Airlangga Logo Guidelines 2025  
 **Built with:** [Quarto](https://quarto.org)
 
