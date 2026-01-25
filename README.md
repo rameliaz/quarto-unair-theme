@@ -54,11 +54,6 @@ format: unair-revealjs
 Content here...
 ```
 
-**Logo specifications:**
-- Use official UNAIR horizontal logo (brandmark + wordmark)
-- Format: PNG with transparent background
-- Recommended size: 300-400px wide
-
 ### Section Dividers
 
 Create blue section divider slides:
@@ -264,9 +259,8 @@ The UNAIR logo and brand elements remain property of Universitas Airlangga.
 
 ## 👏 Credits
 
-**Theme created by:** Rizqy Amelia Zein with Claude Sonnet 3.5
-**Based on:** Universitas Airlangga Logo Guidelines 2025  
-**Built with:** [Quarto](https://quarto.org)
+- **Theme created by:** Rizqy Amelia Zein with Claude Sonnet 3.5
+- **Based on:** [Universitas Airlangga Logo Guidelines 2025](https://drive.google.com/file/d/1KcRztcsJsI0zKPWvENze6Z8dyeXw6NWz/view)  
 
 ## 📬 Contact
 

@@ -59,7 +59,7 @@ quarto render presentation.qmd
 
 Or in RStudio: Click "Render" button
 
-Your presentation will open in your browser!
+Your presentation will open in your browser.
 
 ## Tips
 

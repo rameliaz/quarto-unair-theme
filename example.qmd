@@ -4,7 +4,13 @@ subtitle: "A Professional Quarto Presentation Template"
 author: "Rizqy Amelia Zein"
 institute: "Department of Psychology, Universitas Airlangga"
 date: today
-format: unair-revealjs
+format:
+  unair-revealjs:
+    slide-number: true
+    progress: true
+    history: true
+    center: false
+    transition: slide
 ---
 
 ## Introduction
