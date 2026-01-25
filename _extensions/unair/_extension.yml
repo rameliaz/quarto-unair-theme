@@ -1,0 +1,9 @@
+title: Universitas Airlangga
+author: Rizqy Amelia Zein
+version: 1.0.0
+quarto-required: ">=1.4.0"
+contributes:
+  formats:
+    revealjs:
+      theme: airlangga.scss
+      include-after-body: theme.html

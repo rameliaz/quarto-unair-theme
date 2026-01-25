@@ -1,0 +1,333 @@
+/*-- scss:defaults --*/
+
+// Universitas Airlangga Brand Colors
+$unair-blue: #14497F;
+$unair-yellow: #FFCB05;
+$unair-red: #E6282B;
+$unair-black: #000000;
+$unair-white: #FFFFFF;
+
+// Primary theme colors
+$body-bg: $unair-white;
+$body-color: #333333;
+$link-color: $unair-blue;
+$link-color-hover: lighten($unair-blue, 10%);
+
+// Headings
+$presentation-heading-color: $unair-blue;
+$presentation-heading-font: "Segoe UI", "Inter", -apple-system, BlinkMacSystemFont, "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Ubuntu, Roboto, Noto, sans-serif;
+$presentation-heading-font-weight: 700;
+$presentation-heading-text-transform: none;
+
+// Body font
+$presentation-font-size-root: 32px;
+$font-family-sans-serif: "Segoe UI", "Inter", -apple-system, BlinkMacSystemFont, "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Ubuntu, Roboto, Noto, sans-serif;
+
+// Code blocks
+$code-block-bg: #f5f5f5;
+$code-color: $unair-blue;
+
+/*-- scss:rules --*/
+
+// Logo positioning in top-right corner
+.reveal .slide-logo {
+  position: absolute !important;
+  top: 0 !important;  // Use em units to match text positioning
+  right: 15px !important;
+  max-height: 80px;
+  z-index: 100;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+// Move logo to left for section divider slides
+.reveal section[data-background-color] .slide-logo {
+  left: 15px !important;
+  right: auto !important;
+}
+
+// Title slide styling
+.reveal .title-slide {
+  text-align: left;
+  padding-top: 150px; // Make room for logo
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 120px;
+    background-image: url('img/logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  h1.title {
+    color: $unair-blue;
+    font-size: 2.5em;
+    font-weight: 700;
+    margin-bottom: 0.5em;
+    border-bottom: 4px solid $unair-yellow;
+    padding-bottom: 0.3em;
+  }
+  
+  p.subtitle {
+    color: darken($unair-blue, 5%);
+    font-size: 1.3em;
+    margin-bottom: 2em;
+  }
+  
+  p.author {
+    color: #666;
+    font-size: 1.1em;
+    margin-bottom: 0.5em;
+  }
+  
+  p.date {
+    color: #666;
+    font-size: 0.9em;
+  }
+  
+  p.institute {
+    color: #666;
+    font-size: 0.95em;
+    font-style: italic;
+  }
+}
+
+// logo for title slide
+.reveal .title-slide-logo {
+     max-width: 400px;  // Increase for larger
+     max-height: 180px; // Adjust proportionally
+     margin: 0 auto 1em auto; // spacing
+   }
+
+// Section header slides
+.reveal .section-title-slide {
+  h1, h2 {
+    color: $unair-white;
+    background-color: $unair-blue;
+    padding: 0.5em 1em;
+    border-left: 8px solid $unair-yellow;
+  }
+}
+
+// Regular slides
+.reveal h2 {
+  color: $unair-blue;
+  border-bottom: 3px solid $unair-yellow;
+  padding-bottom: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.reveal h3 {
+  color: $unair-blue;
+  margin-top: 1em;
+}
+
+.reveal h4, .reveal h5, .reveal h6 {
+  color: darken($unair-blue, 10%);
+}
+
+// Links
+.reveal a {
+  color: $unair-blue;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: $unair-yellow;
+    text-decoration: underline;
+  }
+}
+
+// Lists
+.reveal ul, .reveal ol {
+  margin-left: 1.5em;
+}
+
+.reveal ul li,
+.reveal ol li {
+  margin-bottom: 0.5em;
+  line-height: 1.4;
+}
+
+// Emphasis and strong
+.reveal strong, .reveal b {
+  color: $unair-blue;
+  font-weight: 700;
+}
+
+.reveal em {
+  color: darken($unair-blue, 5%);
+}
+
+// Blockquotes
+.reveal blockquote {
+  background: #f9f9f9;
+  border-left: 5px solid $unair-yellow;
+  padding: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: #555;
+}
+
+// Code blocks
+.reveal pre {
+  background-color: $code-block-bg;
+  border: 1px solid #ddd;
+  border-left: 4px solid $unair-blue;
+  padding: 1em;
+  margin: 1em 0;
+}
+
+.reveal code {
+  color: $code-color;
+  background-color: #f5f5f5;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+.reveal pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+// Tables
+.reveal table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.reveal table th {
+  background-color: $unair-blue;
+  color: $unair-white;
+  padding: 0.6em;
+  font-weight: 600;
+}
+
+.reveal table td {
+  padding: 0.6em;
+  border-bottom: 1px solid #ddd;
+}
+
+.reveal table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.reveal table tr:hover {
+  background-color: lighten($unair-yellow, 40%);
+}
+
+// Progress bar
+.reveal .progress {
+  background: rgba(0, 0, 0, 0.2);
+  color: $unair-blue;
+}
+
+.reveal .progress span {
+  background: $unair-blue;
+}
+
+// Slide numbers
+.reveal .slide-number {
+  color: $unair-blue;
+  background-color: transparentize($unair-white, 0.2);
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+
+// Custom classes for accent colors
+.unair-blue {
+  color: $unair-blue !important;
+}
+
+.unair-yellow {
+  color: $unair-yellow !important;
+}
+
+.unair-red {
+  color: $unair-red !important;
+}
+
+.bg-unair-blue {
+  background-color: $unair-blue !important;
+  color: $unair-white !important;
+}
+
+.bg-unair-yellow {
+  background-color: $unair-yellow !important;
+  color: $unair-black !important;
+}
+
+// Fragments styling
+.reveal .fragment.highlight-unair-blue {
+  opacity: 1;
+  visibility: inherit;
+}
+
+.reveal .fragment.highlight-unair-blue.visible {
+  color: $unair-blue;
+  font-weight: 600;
+}
+
+// Footer styling (optional)
+.reveal .footer {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  font-size: 0.6em;
+  color: #999;
+}
+
+// Controls styling
+.reveal .controls {
+  color: $unair-blue;
+}
+
+.reveal .controls button {
+  color: $unair-blue !important;
+}
+
+// Two-column layout helper
+.columns {
+  display: flex;
+  gap: 2em;
+}
+
+.column {
+  flex: 1;
+}
+
+// Image styling
+.reveal img {
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+// Callout boxes (custom classes)
+.callout {
+  padding: 1em;
+  margin: 1em 0;
+  border-radius: 4px;
+  border-left: 5px solid;
+}
+
+.callout-note {
+  background-color: lighten($unair-blue, 45%);
+  border-left-color: $unair-blue;
+}
+
+.callout-warning {
+  background-color: lighten($unair-yellow, 35%);
+  border-left-color: $unair-yellow;
+}
+
+.callout-important {
+  background-color: lighten($unair-red, 40%);
+  border-left-color: $unair-red;
+}

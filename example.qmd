@@ -1,0 +1,158 @@
+---
+title: "Universitas Airlangga Theme"
+subtitle: "A Professional Quarto Presentation Template"
+author: "Your Name"
+institute: "Universitas Airlangga"
+date: today
+format: unair-revealjs
+---
+
+## Introduction
+
+This is a sample presentation using the Universitas Airlangga theme.
+
+- Clean, professional design
+- Official UNAIR branding
+- Easy to customize
+
+## Key Features
+
+:::: {.columns}
+::: {.column}
+**Design Elements**
+
+- UNAIR Blue primary color
+- Yellow accent highlights
+- Clean typography
+- Brand compliance
+:::
+
+::: {.column}
+**Smart Features**
+
+- Auto logo placement
+- White logo on blue
+- Styled components
+- Section dividers
+:::
+::::
+
+# Section Divider {background-color="#14497F"}
+
+This slide has a blue background with white logo
+
+## Brand Colors
+
+The theme uses official Universitas Airlangga colors:
+
+- [UNAIR Blue (#14497F)]{.unair-blue} - Primary
+- [UNAIR Yellow (#FFCB05)]{.bg-unair-yellow} - Accent
+- Red (#E6282B) - Alerts
+
+## Code Examples
+
+R code with syntax highlighting:
+
+```r
+library(ggplot2)
+
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(color = "#14497F") +
+  theme_minimal() +
+  labs(title = "Car Weight vs MPG")
+```
+
+## Tables
+
+| Variable | Mean | SD | N |
+|----------|------|-----|---|
+| Age | 25.3 | 4.2 | 150 |
+| Score | 78.5 | 12.1 | 150 |
+| Hours | 5.7 | 1.8 | 150 |
+
+: Sample Data Summary
+
+## Callout Boxes
+
+::: {.callout-note}
+**Note:** This is an informative callout box with important context.
+:::
+
+::: {.callout-warning}
+**Warning:** Pay attention to this important notice.
+:::
+
+::: {.callout-important}
+**Important:** This is critical information that requires action.
+:::
+
+## Lists
+
+**Ordered lists:**
+
+1. First major point
+2. Second important item
+3. Third key concept
+
+**Unordered lists:**
+
+- Research methodology
+- Data collection
+- Statistical analysis
+
+## Incremental Content
+
+::: {.incremental}
+- Content appears
+- One point
+- At a time
+:::
+
+## Images
+
+![Sample visualization](https://via.placeholder.com/600x400/14497F/FFFFFF?text=UNAIR+Research)
+
+Images automatically have subtle styling.
+
+## Equations
+
+The quadratic formula:
+
+$$
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$
+
+Inline equations work too: $E = mc^2$
+
+## Blockquotes
+
+> "Excellence with Morality"
+>
+> --- Universitas Airlangga
+
+## Custom Styling
+
+You can emphasize with **bold** and *italic*.
+
+Combine with brand colors:
+
+- [**Bold blue emphasis**]{.unair-blue}
+- [Highlighted text]{.bg-unair-yellow}
+
+# Another Section {background-color="#14497F"}
+
+Sections help organize your presentation
+
+## Thank You
+
+**Questions?**
+
+Contact:
+
+- Email: your.email@unair.ac.id
+- Website: www.unair.ac.id
+- Twitter: @unair_official
+
+::: {.callout-note}
+**Note:** Download this template at github.com/yourusername/quarto-unair-theme
+:::
