@@ -134,6 +134,7 @@ ggplot(data, aes(x, y)) +
   geom_point() +
   theme_minimal()
 ```
+
 ```
 
 ## ⚙️ Customization
