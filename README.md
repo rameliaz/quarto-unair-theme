@@ -127,14 +127,11 @@ Tables are automatically styled with UNAIR Blue headers:
 ### Code Blocks
 
 ```markdown
-```r
 library(ggplot2)
 
 ggplot(data, aes(x, y)) +
   geom_point() +
   theme_minimal()
-```
-
 ```
 
 ## ⚙️ Customization
