@@ -26,19 +26,7 @@ cd your-project
 quarto add rameliaz/quarto-unair-theme
 ```
 
-## Step 3: Add Your Logos
-
-Create an `img/` folder and add:
-
-```
-img/
-├── logo.png          # Regular logo
-└── logo_white.png    # White logo for blue backgrounds
-```
-
-Get official logos from UNAIR Communications department.
-
-## Step 4: Create Your Presentation
+## Step 3: Create Your Presentation
 
 Create `presentation.qmd`:
 
@@ -63,7 +51,7 @@ More content...
 New section!
 ```
 
-## Step 5: Render
+## Step 4: Render
 
 ```bash
 quarto render presentation.qmd
