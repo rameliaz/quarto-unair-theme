@@ -1,0 +1,94 @@
+<script>
+// Single unified function to manage all logos
+function manageLogos() {
+  const slides = document.querySelectorAll('.reveal .slides section');
+  
+  slides.forEach(function(slide, index) {
+    // Handle title slide (first slide)
+    if (index === 0) {
+      // Remove any regular logos from title slide
+      const regularLogos = slide.querySelectorAll('.slide-logo');
+      regularLogos.forEach(logo => logo.remove());
+      
+      // Add centered logo if it doesn't exist
+      if (!slide.querySelector('.title-slide-logo')) {
+        const titleLogo = document.createElement('img');
+        titleLogo.src = 'img/logo.png';
+        titleLogo.className = 'title-slide-logo';
+        titleLogo.alt = 'Universitas Airlangga Logo';
+        slide.insertBefore(titleLogo, slide.firstChild);
+      }
+      return;
+    }
+    
+    // For all other slides, ensure only ONE logo exists
+    const existingLogos = slide.querySelectorAll('.slide-logo');
+    
+    // If multiple logos exist, remove all and start fresh
+    if (existingLogos.length > 1) {
+      existingLogos.forEach(logo => logo.remove());
+    }
+    
+    // Check background color
+    const bgColor = slide.getAttribute('data-background-color');
+    const logoSrc = (bgColor === '#14497F' || bgColor === '#14497f') 
+      ? 'img/logo_white.png' 
+      : 'img/logo.png';
+    
+    // If exactly one logo exists, just update its source
+    if (existingLogos.length === 1) {
+      existingLogos[0].src = logoSrc;
+    } 
+    // If no logo exists, create one
+    else if (existingLogos.length === 0) {
+      const logo = document.createElement('img');
+      logo.src = logoSrc;
+      logo.className = 'slide-logo';
+      logo.alt = 'Universitas Airlangga Logo';
+      slide.appendChild(logo);
+    }
+  });
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof Reveal !== 'undefined') {
+    Reveal.on('ready', function() {
+      manageLogos();
+    });
+  } else {
+    setTimeout(manageLogos, 500);
+  }
+});
+
+// Update when slides change
+if (typeof Reveal !== 'undefined') {
+  Reveal.on('slidechanged', function() {
+    manageLogos();
+  });
+}
+</script>
+
+<style>
+/* Additional inline styles for logo */
+.reveal .slide-logo {
+  position: absolute !important;
+  top: 0 !important;  /* Aligns with title */
+  right: 15px !important;
+  max-height: 80px !important;
+  max-width: 200px !important;
+  z-index: 100 !important;
+  object-fit: contain;
+}
+
+/* Ensure title slide doesn't have logo overlap */
+.reveal .title-slide {
+  padding-right: 220px;
+}
+
+/* Section title slide styling */
+.reveal section[data-background-color] h1,
+.reveal section[data-background-color] h2 {
+  color: white !important;
+}
+</style>
