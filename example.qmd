@@ -2,7 +2,9 @@
 title: "Universitas Airlangga Theme"
 subtitle: "A Professional Quarto Presentation Template"
 author: "Rizqy Amelia Zein"
-institute: "Department of Psychology, Universitas Airlangga"
+institute: 
+  - "Department of Psychology, Universitas Airlangga"
+  - "Sains Terbuka Airlangga"
 date: today
 format:
   unair-revealjs:

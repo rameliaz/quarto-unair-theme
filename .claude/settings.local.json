@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(quarto render:*)",
+      "Bash(mv index.html docs/index.html)",
+      "Bash(mv example_files docs/example_files)",
+      "Bash(mkdir -p docs/_extensions/unair)",
+      "Bash(cp _extensions/unair/logo.png docs/_extensions/unair/)",
+      "Bash(cp _extensions/unair/logo_white.png docs/_extensions/unair/)",
+      "Bash(tasklist)"
+    ]
+  }
+}
