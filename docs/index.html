@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.8.14">
 
   <meta name="author" content="Rizqy Amelia Zein">
-  <meta name="dcterms.date" content="2026-01-25">
+  <meta name="dcterms.date" content="2026-03-29">
   <title>Universitas Airlangga Theme</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -96,7 +96,7 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="example_files/libs/revealjs/dist/theme/quarto-7765bccf8dd08ddb7b20c7c622654c0f.css">
+  <link rel="stylesheet" href="example_files/libs/revealjs/dist/theme/quarto-2a55cd4b6e10f1d0de6111d151c8372c.css">
   <link href="example_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="example_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="example_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -205,10 +205,13 @@ Rizqy Amelia Zein
         <p class="quarto-title-affiliation">
             Department of Psychology, Universitas Airlangga
           </p>
+        <p class="quarto-title-affiliation">
+            Sains Terbuka Airlangga
+          </p>
     </div>
 </div>
 
-  <p class="date">2026-01-25</p>
+  <p class="date">2026-03-29</p>
 </section>
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
@@ -651,7 +654,7 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
           // Add centered logo if it doesn't exist
           if (!slide.querySelector('.title-slide-logo')) {
             const titleLogo = document.createElement('img');
-            titleLogo.src = 'img/logo.png';
+            titleLogo.src = '_extensions/unair/logo.png';
             titleLogo.className = 'title-slide-logo';
             titleLogo.alt = 'Universitas Airlangga Logo';
             slide.insertBefore(titleLogo, slide.firstChild);
@@ -669,9 +672,9 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
         
         // Check background color
         const bgColor = slide.getAttribute('data-background-color');
-        const logoSrc = (bgColor === '#14497F' || bgColor === '#14497f') 
-          ? 'img/logo_white.png' 
-          : 'img/logo.png';
+        const logoSrc = (bgColor === '#14497F' || bgColor === '#14497f')
+          ? '_extensions/unair/logo_white.png'
+          : '_extensions/unair/logo.png';
         
         // If exactly one logo exists, just update its source
         if (existingLogos.length === 1) {
@@ -711,7 +714,7 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
     /* Additional inline styles for logo */
     .reveal .slide-logo {
       position: absolute !important;
-      top: 0 !important;  /* Aligns with title */
+      top: -1em !important;  /* Aligns with title */
       right: 15px !important;
       max-height: 80px !important;
       max-width: 200px !important;
