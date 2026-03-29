@@ -43,6 +43,7 @@ $unair-red:    #E6282B;  // Alerts / warnings
 - `_quarto.yml` sets `format.unair-revealjs.output-file: index.html` so GitHub Pages serves the correct entry point.
 - The supporting assets folder is named `example_files/` (based on source filename) — this is expected; `index.html` references it correctly via relative paths.
 - Re-render with `quarto render example.qmd` after any changes.
+- `docs/.nojekyll` **must** remain committed — GitHub Pages (Jekyll) silently drops all `_`-prefixed directories without it, causing logos to 404 on the live site.
 
 ## Development Conventions
 
