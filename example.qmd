@@ -5,6 +5,7 @@ author: "Rizqy Amelia Zein"
 institute: 
   - "Department of Psychology, Universitas Airlangga"
   - "Sains Terbuka Airlangga"
+  - "Research Data & Methods Team, Center for Advanced Internet Studies"
 date: today
 format:
   unair-revealjs:

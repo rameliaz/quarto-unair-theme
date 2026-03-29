@@ -1,0 +1,93 @@
+[
+  {
+    "objectID": "quarto-unair-theme/example.html#introduction",
+    "href": "quarto-unair-theme/example.html#introduction",
+    "title": "Universitas Airlangga Theme",
+    "section": "Introduction",
+    "text": "Introduction\nThis is a sample presentation using the Universitas Airlangga theme.\n\nClean, professional design\nOfficial UNAIR branding\nEasy to customize"
+  },
+  {
+    "objectID": "quarto-unair-theme/example.html#key-features",
+    "href": "quarto-unair-theme/example.html#key-features",
+    "title": "Universitas Airlangga Theme",
+    "section": "Key Features",
+    "text": "Key Features\n\n\nDesign Elements\n\nUNAIR Blue primary color\nYellow accent highlights\nClean typography\nCompliance with the brand standardization\n\n\nSmart Features\n\nAuto logo placement\nWhite logo on blue\nStyled components\nSection dividers"
+  },
+  {
+    "objectID": "quarto-unair-theme/example.html#brand-colors",
+    "href": "quarto-unair-theme/example.html#brand-colors",
+    "title": "Universitas Airlangga Theme",
+    "section": "Brand Colors",
+    "text": "Brand Colors\nThe theme uses official Universitas Airlangga colors:\n\nUNAIR Blue (#14497F) - Primary\nUNAIR Yellow (#FFCB05) - Accent\nRed (#E6282B) - Alerts"
+  },
+  {
+    "objectID": "quarto-unair-theme/example.html#code-examples",
+    "href": "quarto-unair-theme/example.html#code-examples",
+    "title": "Universitas Airlangga Theme",
+    "section": "Code Examples",
+    "text": "Code Examples\nR code with syntax highlighting:\nlibrary(ggplot2)\n\nggplot(mtcars, aes(x = wt, y = mpg)) +\n  geom_point(color = \"#14497F\") +\n  theme_minimal() +\n  labs(title = \"Car Weight vs MPG\")"
+  },
+  {
+    "objectID": "quarto-unair-theme/example.html#tables",
+    "href": "quarto-unair-theme/example.html#tables",
+    "title": "Universitas Airlangga Theme",
+    "section": "Tables",
+    "text": "Tables\n\nSample Data Summary\n\n\nVariable\nMean\nSD\nN\n\n\n\n\nAge\n25.3\n4.2\n150\n\n\nScore\n78.5\n12.1\n150\n\n\nHours\n5.7\n1.8\n150"
+  },
+  {
+    "objectID": "quarto-unair-theme/example.html#callout-boxes",
+    "href": "quarto-unair-theme/example.html#callout-boxes",
+    "title": "Universitas Airlangga Theme",
+    "section": "Callout Boxes",
+    "text": "Callout Boxes\n\n\n\n\n\n\nNote\n\n\nNote: This is an informative callout box with important context.\n\n\n\n\n\n\n\n\n\nWarning\n\n\nWarning: Pay attention to this important notice.\n\n\n\n\n\n\n\n\n\nImportant\n\n\nImportant: This is critical information that requires action."
+  },
+  {
+    "objectID": "quarto-unair-theme/example.html#lists",
+    "href": "quarto-unair-theme/example.html#lists",
+    "title": "Universitas Airlangga Theme",
+    "section": "Lists",
+    "text": "Lists\nOrdered lists:\n\nFirst major point\nSecond important item\nThird key concept\n\nUnordered lists:\n\nResearch methodology\nData collection\nStatistical analysis"
+  },
+  {
+    "objectID": "quarto-unair-theme/example.html#incremental-content",
+    "href": "quarto-unair-theme/example.html#incremental-content",
+    "title": "Universitas Airlangga Theme",
+    "section": "Incremental Content",
+    "text": "Incremental Content\n\nContent appears\nOne point\nAt a time"
+  },
+  {
+    "objectID": "quarto-unair-theme/example.html#images",
+    "href": "quarto-unair-theme/example.html#images",
+    "title": "Universitas Airlangga Theme",
+    "section": "Images",
+    "text": "Images\n\nSample visualizationImages automatically have subtle styling."
+  },
+  {
+    "objectID": "quarto-unair-theme/example.html#equations",
+    "href": "quarto-unair-theme/example.html#equations",
+    "title": "Universitas Airlangga Theme",
+    "section": "Equations",
+    "text": "Equations\nThe quadratic formula:\n\\[\nx = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}\n\\]\nInline equations work too: \\(E = mc^2\\)"
+  },
+  {
+    "objectID": "quarto-unair-theme/example.html#blockquotes",
+    "href": "quarto-unair-theme/example.html#blockquotes",
+    "title": "Universitas Airlangga Theme",
+    "section": "Blockquotes",
+    "text": "Blockquotes\n\n“When measure becomes a target it ceases to be a good measure.”\n— Goodhart’s law"
+  },
+  {
+    "objectID": "quarto-unair-theme/example.html#custom-styling",
+    "href": "quarto-unair-theme/example.html#custom-styling",
+    "title": "Universitas Airlangga Theme",
+    "section": "Custom Styling",
+    "text": "Custom Styling\nYou can emphasize with bold and italic.\nCombine with brand colors:\n\nBold blue emphasis\nHighlighted text"
+  },
+  {
+    "objectID": "quarto-unair-theme/example.html#thank-you",
+    "href": "quarto-unair-theme/example.html#thank-you",
+    "title": "Universitas Airlangga Theme",
+    "section": "Thank You",
+    "text": "Thank You\nQuestions?\nContact:\n\nEmail: amelia.zein@psikologi.unair.ac.id\nWebsite: https://rameliaz.github.io/\nDiscord: @rameliaz\n\n\n\n\n\n\n\nNote\n\n\nNote: Download this template at github.com/rameliaz/quarto-unair-theme"
+  }
+]
