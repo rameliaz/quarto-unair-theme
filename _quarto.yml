@@ -1,7 +1,11 @@
 project:
   output-dir: docs
   render:
-  - example.qmd
+    - example.qmd
   resources:
     - _extensions/unair/logo.png
     - _extensions/unair/logo_white.png
+
+format:
+  unair-revealjs:
+    output-file: index.html

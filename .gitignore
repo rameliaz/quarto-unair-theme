@@ -46,3 +46,7 @@ PACKAGE_SUMMARY.md
 # Render artifacts (root-level copies from output-dir resources)
 /logo.png
 /logo_white.png
+
+# Claude
+/.claude/
+CLAUDE.md
