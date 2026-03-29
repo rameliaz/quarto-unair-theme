@@ -752,11 +752,21 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 
       if (typeof Reveal !== 'undefined') {
 
-        Reveal.on('ready', function() {
+        // Reveal.initialize() runs before DOMContentLoaded in Quarto's output,
+
+        // so 'ready' has already fired by the time we get here. Call directly.
+
+        if (Reveal.isReady()) {
 
           manageLogos();
 
-        });
+        } else {
+
+          Reveal.on('ready', manageLogos);
+
+        }
+
+        Reveal.on('slidechanged', manageLogos);
 
       } else {
 
@@ -765,20 +775,6 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
       }
 
     });
-
-    
-
-    // Update when slides change
-
-    if (typeof Reveal !== 'undefined') {
-
-      Reveal.on('slidechanged', function() {
-
-        manageLogos();
-
-      });
-
-    }
 
     </script>
 

@@ -36,7 +36,10 @@
       "Bash(wc -l \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\_extensions\\\\unair\\\\airlangga.scss\" \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\_extensions\\\\unair\\\\theme.html\")",
       "Bash(head -20 \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\_extensions\\\\unair\\\\airlangga.scss\")",
       "Bash(head -20 \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\_extensions\\\\unair\\\\theme.html\")",
-      "Bash(find \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs\" -maxdepth 1 -type f)"
+      "Bash(find \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs\" -maxdepth 1 -type f)",
+      "Bash(ls \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs/_extensions/unair/\")",
+      "Bash(wc -l \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs\\\\index.html\")",
+      "Bash(head -5 \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs\\\\index.html\")"
     ]
   }
 }

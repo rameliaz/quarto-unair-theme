@@ -37,6 +37,13 @@ $unair-red:    #E6282B;  // Alerts / warnings
 - **JavaScript** (`theme.html`): `manageLogos()` runs on `DOMContentLoaded` and `Reveal.slidechanged`. Inserts `logo.png` (regular) or `logo_white.png` (white variant) depending on slide background.
 - **Logo switching logic**: white logo when `data-background-color="#14497F"` (section divider slides); regular logo all other slides; centered logo on title slide (index 0).
 
+## GitHub Pages (`docs/`)
+
+- Output goes to `docs/` via `project.output-dir` in `_quarto.yml`.
+- `_quarto.yml` sets `format.unair-revealjs.output-file: index.html` so GitHub Pages serves the correct entry point.
+- The supporting assets folder is named `example_files/` (based on source filename) — this is expected; `index.html` references it correctly via relative paths.
+- Re-render with `quarto render example.qmd` after any changes.
+
 ## Development Conventions
 
 - Keep all SCSS changes inside `_extensions/unair/airlangga.scss`.
@@ -45,6 +52,7 @@ $unair-red:    #E6282B;  // Alerts / warnings
 - Follow UNAIR 2025 brand guidelines — do not introduce colors outside the approved palette.
 - Test changes using `example.qmd` before committing.
 - Use semantic versioning; update `CHANGELOG.md` and `_extension.yml` version on releases.
+- `output-file` in `_quarto.yml` must be under `format.unair-revealjs`, not `format.revealjs` — Quarto does not inherit project-level `revealjs` settings for custom extension formats.
 
 ## Custom CSS Classes (available in .qmd files)
 

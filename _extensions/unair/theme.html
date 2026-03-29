@@ -53,20 +53,18 @@ function manageLogos() {
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
   if (typeof Reveal !== 'undefined') {
-    Reveal.on('ready', function() {
+    // Reveal.initialize() runs before DOMContentLoaded in Quarto's output,
+    // so 'ready' has already fired by the time we get here. Call directly.
+    if (Reveal.isReady()) {
       manageLogos();
-    });
+    } else {
+      Reveal.on('ready', manageLogos);
+    }
+    Reveal.on('slidechanged', manageLogos);
   } else {
     setTimeout(manageLogos, 500);
   }
 });
-
-// Update when slides change
-if (typeof Reveal !== 'undefined') {
-  Reveal.on('slidechanged', function() {
-    manageLogos();
-  });
-}
 </script>
 
 <style>
