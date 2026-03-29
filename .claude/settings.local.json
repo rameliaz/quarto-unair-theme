@@ -39,7 +39,8 @@
       "Bash(find \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs\" -maxdepth 1 -type f)",
       "Bash(ls \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs/_extensions/unair/\")",
       "Bash(wc -l \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs\\\\index.html\")",
-      "Bash(head -5 \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs\\\\index.html\")"
+      "Bash(head -5 \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs\\\\index.html\")",
+      "Bash(ls \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs/.nojekyll\")"
     ]
   }
 }
