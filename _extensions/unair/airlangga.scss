@@ -20,7 +20,7 @@ $presentation-heading-font-weight: 700;
 $presentation-heading-text-transform: none;
 
 // Body font
-$presentation-font-size-root: 32px;
+$presentation-font-size-root: 24px;
 $font-family-sans-serif: "Segoe UI", "Inter", -apple-system, BlinkMacSystemFont, "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Ubuntu, Roboto, Noto, sans-serif;
 
 // Code blocks
@@ -32,7 +32,7 @@ $code-color: $unair-blue;
 // Logo positioning in top-right corner
 .reveal .slide-logo {
   position: absolute !important;
-  top: -0.3em !important;  // Use em units to match text positioning
+  top: -1em !important;  // Use em units to match text positioning
   right: 15px !important;
   max-height: 80px;
   z-index: 100;
@@ -51,23 +51,9 @@ $code-color: $unair-blue;
   text-align: left;
   padding-top: 150px; // Make room for logo
   
-  &::before {
-    content: '';
-    position: absolute;
-    top: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 300px;
-    height: 120px;
-    background-image: url('img/logo.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-  }
-  
   h1.title {
     color: $unair-blue;
-    font-size: 2.5em;
+    font-size: 2em;
     font-weight: 700;
     margin-bottom: 0.5em;
     border-bottom: 4px solid $unair-yellow;
@@ -100,8 +86,8 @@ $code-color: $unair-blue;
 
 // logo for title slide
 .reveal .title-slide-logo {
-     max-width: 400px;  // Increase for larger
-     max-height: 180px; // Adjust proportionally
+     max-width: 320px;  // Increase for larger
+     max-height: 144px; // Adjust proportionally
      margin: 0 auto 1em auto; // spacing
    }
 
