@@ -39,4 +39,10 @@ temp/
 # Markdowns
 GITHUB_SETUP.md
 PACKAGE_SUMMARY.md
+
+# Quarto
 /.quarto/
+
+# Render artifacts (root-level copies from output-dir resources)
+/logo.png
+/logo_white.png

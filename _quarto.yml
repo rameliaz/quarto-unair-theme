@@ -1,0 +1,7 @@
+project:
+  output-dir: docs
+  render:
+  - example.qmd
+  resources:
+    - _extensions/unair/logo.png
+    - _extensions/unair/logo_white.png

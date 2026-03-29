@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-03-29
+
+### Fixed
+- Logo images (`logo.png`, `logo_white.png`) not appearing when rendering with `output-dir` set (e.g. to `docs/`)
+- Root cause: `format-resources` is not a recognized Quarto extension key and was silently ignored; replaced with `resources` in `_quarto.yml` which correctly copies logos to the output directory preserving their path structure
+- Removed non-functional `format-resources` key from `_extension.yml`
+- Added `_quarto.yml` back to version control so users installing via `quarto use template` get the resources fix automatically
+
 ## [1.0.0] - 2025-01-25
 
 ### Added
