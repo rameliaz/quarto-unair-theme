@@ -1,39 +1,59 @@
 <script>
+// Detect extension base path: 'quarto add' installs to _extensions/{owner}/{name}/
+// while 'quarto use template' preserves _extensions/{name}/ directly.
+var _unairExtPath = (function() {
+  var candidates = [
+    '_extensions/rameliaz/unair/',
+    '_extensions/unair/'
+  ];
+  // Use the path where the SCSS stylesheet was loaded from
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    try {
+      var href = sheets[i].href || '';
+      for (var j = 0; j < candidates.length; j++) {
+        if (href.indexOf(candidates[j]) !== -1) return candidates[j];
+      }
+    } catch(e) {}
+  }
+  return candidates[0]; // default: quarto add path
+})();
+
 // Single unified function to manage all logos
 function manageLogos() {
   const slides = document.querySelectorAll('.reveal .slides section');
-  
-  slides.forEach(function(slide, index) {
-    // Handle title slide (first slide)
-    if (index === 0) {
+
+  slides.forEach(function(slide) {
+    // Handle title slide (detected by Quarto's .title-slide class, not index)
+    if (slide.classList.contains('title-slide')) {
       // Remove any regular logos from title slide
       const regularLogos = slide.querySelectorAll('.slide-logo');
       regularLogos.forEach(logo => logo.remove());
-      
+
       // Add centered logo if it doesn't exist
       if (!slide.querySelector('.title-slide-logo')) {
         const titleLogo = document.createElement('img');
-        titleLogo.src = '_extensions/unair/logo.png';
+        titleLogo.src = _unairExtPath + 'logo.png';
         titleLogo.className = 'title-slide-logo';
         titleLogo.alt = 'Universitas Airlangga Logo';
         slide.insertBefore(titleLogo, slide.firstChild);
       }
       return;
     }
-    
+
     // For all other slides, ensure only ONE logo exists
     const existingLogos = slide.querySelectorAll('.slide-logo');
-    
+
     // If multiple logos exist, remove all and start fresh
     if (existingLogos.length > 1) {
       existingLogos.forEach(logo => logo.remove());
     }
-    
+
     // Check background color
     const bgColor = slide.getAttribute('data-background-color');
     const logoSrc = (bgColor === '#14497F' || bgColor === '#14497f')
-      ? '_extensions/rameliaz/unair/logo_white.png'
-      : '_extensions/rameliaz/unair/logo.png';
+      ? _unairExtPath + 'logo_white.png'
+      : _unairExtPath + 'logo.png';
     
     // If exactly one logo exists, just update its source
     if (existingLogos.length === 1) {

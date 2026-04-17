@@ -38,6 +38,7 @@ $code-color: $unair-blue;
   z-index: 100;
   margin-top: 0 !important;
   padding-top: 0 !important;
+  box-shadow: none !important;
 }
 
 // Move logo to left for section divider slides
@@ -86,9 +87,10 @@ $code-color: $unair-blue;
 
 // logo for title slide
 .reveal .title-slide-logo {
-     max-width: 320px;  // Increase for larger
-     max-height: 144px; // Adjust proportionally
-     margin: 0 auto 1em auto; // spacing
+     max-width: 320px;
+     max-height: 144px;
+     margin: 0 auto 1em auto;
+     box-shadow: none !important;
    }
 
 // Section header slides
