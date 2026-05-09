@@ -1,23 +1,29 @@
 <script>
-// Detect extension base path: 'quarto add' installs to _extensions/{owner}/{name}/
-// while 'quarto use template' preserves _extensions/{name}/ directly.
-var _unairExtPath = (function() {
+// Detect extension base path by probing for the logo file.
+// Stylesheet detection is unreliable: Quarto compiles extension SCSS into the
+// bundled theme CSS, so no _extensions/ path ever appears in document.styleSheets.
+var _unairExtPath = null;
+
+function _resolveUnairExtPath(callback) {
   var candidates = [
     '_extensions/rameliaz/unair/',
     '_extensions/unair/'
   ];
-  // Use the path where the SCSS stylesheet was loaded from
-  var sheets = document.styleSheets;
-  for (var i = 0; i < sheets.length; i++) {
-    try {
-      var href = sheets[i].href || '';
-      for (var j = 0; j < candidates.length; j++) {
-        if (href.indexOf(candidates[j]) !== -1) return candidates[j];
-      }
-    } catch(e) {}
+
+  function probe(idx) {
+    if (idx >= candidates.length) {
+      _unairExtPath = candidates[0];
+      callback();
+      return;
+    }
+    var img = new Image();
+    img.onload = function() { _unairExtPath = candidates[idx]; callback(); };
+    img.onerror = function() { probe(idx + 1); };
+    img.src = candidates[idx] + 'logo.png';
   }
-  return candidates[0]; // default: quarto add path
-})();
+
+  probe(0);
+}
 
 // Single unified function to manage all logos
 function manageLogos() {
@@ -70,20 +76,20 @@ function manageLogos() {
   });
 }
 
-// Initialize on page load
+// Initialize on page load — resolve path first, then wire up Reveal events
 document.addEventListener('DOMContentLoaded', function() {
-  if (typeof Reveal !== 'undefined') {
-    // Reveal.initialize() runs before DOMContentLoaded in Quarto's output,
-    // so 'ready' has already fired by the time we get here. Call directly.
-    if (Reveal.isReady()) {
-      manageLogos();
+  _resolveUnairExtPath(function() {
+    if (typeof Reveal !== 'undefined') {
+      if (Reveal.isReady()) {
+        manageLogos();
+      } else {
+        Reveal.on('ready', manageLogos);
+      }
+      Reveal.on('slidechanged', manageLogos);
     } else {
-      Reveal.on('ready', manageLogos);
+      setTimeout(manageLogos, 500);
     }
-    Reveal.on('slidechanged', manageLogos);
-  } else {
-    setTimeout(manageLogos, 500);
-  }
+  });
 });
 </script>
 

@@ -6,11 +6,11 @@
 <script src="example_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="example_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="example_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="example_files/libs/quarto-html/quarto-syntax-highlighting-8f1af79587c2686b78fe4e1fbadd71ab.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.14">
+<link href="example_files/libs/quarto-html/quarto-syntax-highlighting-e44360b8a8db1e130c7792fece1c8032.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.3">
 
   <meta name="author" content="Rizqy Amelia Zein">
-  <meta name="dcterms.date" content="2026-03-29">
+  <meta name="dcterms.date" content="2026-05-09">
   <title>Universitas Airlangga Theme</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="example_files/libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="example_files/libs/revealjs/dist/reveal.css">
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -96,7 +99,7 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="example_files/libs/revealjs/dist/theme/quarto-2a55cd4b6e10f1d0de6111d151c8372c.css">
+  <link rel="stylesheet" href="example_files/libs/revealjs/dist/theme/quarto-33d738a32398c7d5466b2d30f9c9a2f9.css">
   <link href="example_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="example_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="example_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -214,7 +217,7 @@ Rizqy Amelia Zein
     </div>
 </div>
 
-  <p class="date">2026-03-29</p>
+  <p class="date">2026-05-09</p>
 </section>
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
@@ -263,12 +266,12 @@ Rizqy Amelia Zein
 <section id="code-examples" class="slide level2">
 <h2>Code Examples</h2>
 <p>R code with syntax highlighting:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(ggplot2)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb1-2"><a href=""></a></span>
 <span id="cb1-3"><a href=""></a><span class="fu">ggplot</span>(mtcars, <span class="fu">aes</span>(<span class="at">x =</span> wt, <span class="at">y =</span> mpg)) <span class="sc">+</span></span>
 <span id="cb1-4"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#14497F"</span>) <span class="sc">+</span></span>
 <span id="cb1-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb1-6"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Car Weight vs MPG"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Car Weight vs MPG"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="tables" class="slide level2">
 <h2>Tables</h2>
@@ -616,7 +619,7 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -644,19 +647,71 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
     </script>
     <script>
 
+    // Detect extension base path by probing for the logo file.
+
+    // Stylesheet detection is unreliable: Quarto compiles extension SCSS into the
+
+    // bundled theme CSS, so no _extensions/ path ever appears in document.styleSheets.
+
+    var _unairExtPath = null;
+
+    
+
+    function _resolveUnairExtPath(callback) {
+
+      var candidates = [
+
+        '_extensions/rameliaz/unair/',
+
+        '_extensions/unair/'
+
+      ];
+
+    
+
+      function probe(idx) {
+
+        if (idx >= candidates.length) {
+
+          _unairExtPath = candidates[0];
+
+          callback();
+
+          return;
+
+        }
+
+        var img = new Image();
+
+        img.onload = function() { _unairExtPath = candidates[idx]; callback(); };
+
+        img.onerror = function() { probe(idx + 1); };
+
+        img.src = candidates[idx] + 'logo.png';
+
+      }
+
+    
+
+      probe(0);
+
+    }
+
+    
+
     // Single unified function to manage all logos
 
     function manageLogos() {
 
       const slides = document.querySelectorAll('.reveal .slides section');
 
-      
+    
 
-      slides.forEach(function(slide, index) {
+      slides.forEach(function(slide) {
 
-        // Handle title slide (first slide)
+        // Handle title slide (detected by Quarto's .title-slide class, not index)
 
-        if (index === 0) {
+        if (slide.classList.contains('title-slide')) {
 
           // Remove any regular logos from title slide
 
@@ -664,7 +719,7 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 
           regularLogos.forEach(logo => logo.remove());
 
-          
+    
 
           // Add centered logo if it doesn't exist
 
@@ -672,7 +727,7 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 
             const titleLogo = document.createElement('img');
 
-            titleLogo.src = '_extensions/unair/logo.png';
+            titleLogo.src = _unairExtPath + 'logo.png';
 
             titleLogo.className = 'title-slide-logo';
 
@@ -686,13 +741,13 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 
         }
 
-        
+    
 
         // For all other slides, ensure only ONE logo exists
 
         const existingLogos = slide.querySelectorAll('.slide-logo');
 
-        
+    
 
         // If multiple logos exist, remove all and start fresh
 
@@ -702,7 +757,7 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 
         }
 
-        
+    
 
         // Check background color
 
@@ -710,9 +765,9 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 
         const logoSrc = (bgColor === '#14497F' || bgColor === '#14497f')
 
-          ? '_extensions/unair/logo_white.png'
+          ? _unairExtPath + 'logo_white.png'
 
-          : '_extensions/unair/logo.png';
+          : _unairExtPath + 'logo.png';
 
         
 
@@ -746,33 +801,33 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 
     
 
-    // Initialize on page load
+    // Initialize on page load — resolve path first, then wire up Reveal events
 
     document.addEventListener('DOMContentLoaded', function() {
 
-      if (typeof Reveal !== 'undefined') {
+      _resolveUnairExtPath(function() {
 
-        // Reveal.initialize() runs before DOMContentLoaded in Quarto's output,
+        if (typeof Reveal !== 'undefined') {
 
-        // so 'ready' has already fired by the time we get here. Call directly.
+          if (Reveal.isReady()) {
 
-        if (Reveal.isReady()) {
+            manageLogos();
 
-          manageLogos();
+          } else {
+
+            Reveal.on('ready', manageLogos);
+
+          }
+
+          Reveal.on('slidechanged', manageLogos);
 
         } else {
 
-          Reveal.on('ready', manageLogos);
+          setTimeout(manageLogos, 500);
 
         }
 
-        Reveal.on('slidechanged', manageLogos);
-
-      } else {
-
-        setTimeout(manageLogos, 500);
-
-      }
+      });
 
     });
 
@@ -874,13 +929,14 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy
