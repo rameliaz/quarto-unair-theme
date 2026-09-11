@@ -6,11 +6,11 @@
 <script src="example_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="example_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="example_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="example_files/libs/quarto-html/quarto-syntax-highlighting-e44360b8a8db1e130c7792fece1c8032.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.10.3">
+<link href="example_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="Rizqy Amelia Zein">
-  <meta name="dcterms.date" content="2026-05-09">
+  <meta name="dcterms.date" content="2026-09-11">
   <title>Universitas Airlangga Theme</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,10 +21,13 @@
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
     */
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -99,7 +102,7 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="example_files/libs/revealjs/dist/theme/quarto-33d738a32398c7d5466b2d30f9c9a2f9.css">
+  <link rel="stylesheet" href="example_files/libs/revealjs/dist/theme/quarto-a60d16f88937043f0c0e36e2048ca64c.css">
   <link href="example_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="example_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="example_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -191,6 +194,7 @@
       margin-right: 0; 
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -203,21 +207,15 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Rizqy Amelia Zein 
+Rizqy Amelia Zein
 </div>
         <p class="quarto-title-affiliation">
             Department of Psychology, Universitas Airlangga
           </p>
-        <p class="quarto-title-affiliation">
-            Sains Terbuka Airlangga
-          </p>
-        <p class="quarto-title-affiliation">
-            Research Data &amp; Methods Team, Center for Advanced Internet Studies
-          </p>
     </div>
 </div>
 
-  <p class="date">2026-05-09</p>
+  <p class="date">2026-09-11</p>
 </section>
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
@@ -266,12 +264,12 @@ Rizqy Amelia Zein
 <section id="code-examples" class="slide level2">
 <h2>Code Examples</h2>
 <p>R code with syntax highlighting:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-2"><a href=""></a></span>
-<span id="cb1-3"><a href=""></a><span class="fu">ggplot</span>(mtcars, <span class="fu">aes</span>(<span class="at">x =</span> wt, <span class="at">y =</span> mpg)) <span class="sc">+</span></span>
-<span id="cb1-4"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#14497F"</span>) <span class="sc">+</span></span>
-<span id="cb1-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb1-6"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Car Weight vs MPG"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-label="1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="" aria-label="2"></a></span>
+<span id="cb1-3"><a href="" aria-label="3"></a><span class="fu">ggplot</span>(mtcars, <span class="fu">aes</span>(<span class="at">x =</span> wt, <span class="at">y =</span> mpg)) <span class="sc">+</span></span>
+<span id="cb1-4"><a href="" aria-label="4"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#14497F"</span>) <span class="sc">+</span></span>
+<span id="cb1-5"><a href="" aria-label="5"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb1-6"><a href="" aria-label="6"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Car Weight vs MPG"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="tables" class="slide level2">
 <h2>Tables</h2>
@@ -401,30 +399,164 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 <li><span class="bg-unair-yellow">Highlighted text</span></li>
 </ul>
 </section></section>
-<section>
 <section id="another-section" class="title-slide slide level1 center" data-background-color="#14497F">
 <h1>Another Section</h1>
 <p>Sections help organize your presentation</p>
 </section>
-<section id="thank-you" class="slide level2">
-<h2>Thank You</h2>
-<p><strong>Questions?</strong></p>
-<p>Contact:</p>
+
+<section>
+<section id="new-layout-formats" class="title-slide slide level1 center" data-background-color="#14497F">
+<h1>New Layout Formats</h1>
+<p>Opt-in, full-slide layouts for richer presentations</p>
+</section>
+<section id="agenda" class="slide level2 agenda-slide">
+<h2>Agenda</h2>
+<ol type="1">
+<li>Background &amp; Motivation</li>
+<li>Research Methodology</li>
+<li>Findings &amp; Discussion</li>
+<li>Conclusions</li>
+<li>Q&amp;A</li>
+</ol>
+</section>
+<section id="field-study-results" class="slide level2 section-slide">
+<h2>Field Study Results</h2>
+<div class="section-number">
+<p>01</p>
+</div>
+</section>
+<section id="participant-recruitment" class="slide level2 section-slide-dark" data-background-image="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&amp;w=1200&amp;auto=format&amp;fit=crop">
+<h2>Participant Recruitment</h2>
+<div class="section-number">
+<p>02</p>
+</div>
+</section>
+<section id="key-findings" class="slide level2 text-image">
+<h2>Key Findings</h2>
+<div class="columns">
+<div class="column">
 <ul>
-<li>Email: <a href="mailto:amelia.zein@psikologi.unair.ac.id">amelia.zein@psikologi.unair.ac.id</a></li>
-<li>Website: <a href="https://rameliaz.github.io/">https://rameliaz.github.io/</a></li>
-<li>Discord: <a href="https://discord.com/users/807046335613632555"><span class="citation" data-cites="rameliaz">@rameliaz</span></a></li>
+<li>Effect sizes were consistent across cohorts</li>
+<li>Replication held under pre-registered analysis</li>
+<li>Results support the proposed mechanism</li>
 </ul>
+</div><div class="column">
+<p><img data-src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&amp;w=800&amp;auto=format&amp;fit=crop.png"></p>
+</div></div>
+</section>
+<section id="section" class="slide level2 image-text">
+<h2></h2>
+<div class="columns">
+<div class="column">
+<p><img data-src="https://images.unsplash.com/photo-1571260899304-425eee4c7efc?q=80&amp;w=800&amp;auto=format&amp;fit=crop.png"></p>
+</div><div class="column">
+<h3 id="data-collection">Data Collection</h3>
+<p>Field data were gathered across three sites using a standardized protocol, with inter-rater reliability checks throughout.</p>
+</div></div>
+</section>
+<section id="overview" class="slide level2 text-slide-bg">
+<h2>Overview</h2>
+<div class="lead">
+<p>A quick summary before we dive into the details.</p>
+</div>
+<div class="content-box">
+<p>This study examines how open science practices affect replication rates in psychological research, drawing on a pre-registered, multi-site design.</p>
+</div>
+</section>
+<section id="our-pillars" class="slide level2 columns-slide">
+<h2>Our Pillars</h2>
+<div class="lead">
+<p>Three principles guide this research program.</p>
+</div>
+<div class="columns-area">
+<div class="col-item">
+<p><span class="col-icon">🎓</span></p>
+<h3 id="rigor">Rigor</h3>
+<p>Pre-registered designs and transparent analysis pipelines.</p>
+</div>
+<div class="col-item">
+<p><span class="col-icon">🤝</span></p>
+<h3 id="collaboration">Collaboration</h3>
+<p>Multi-site partnerships across Indonesian universities.</p>
+</div>
+<div class="col-item">
+<p><span class="col-icon">📊</span></p>
+<h3 id="openness">Openness</h3>
+<p>Data, code, and materials shared on publication.</p>
+</div>
+</div>
+</section>
+<section id="campus-highlights" class="slide level2 overview-slide">
+<h2>Campus Highlights</h2>
+<div class="overview-grid">
+<div class="overview-item">
+<p><img data-src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&amp;w=600&amp;auto=format&amp;fit=crop.png"></p>
+<p>Main Campus, Surabaya</p>
+</div>
+<div class="overview-item">
+<p><img data-src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&amp;w=600&amp;auto=format&amp;fit=crop.png"></p>
+<p>Research Laboratory</p>
+</div>
+<div class="overview-item">
+<p><img data-src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&amp;w=600&amp;auto=format&amp;fit=crop.png"></p>
+<p>Student Life</p>
+</div>
+</div>
+</section>
+<section id="quote" class="slide level2 quote-slide">
+<h2>Quote</h2>
+<div class="quote-bubble">
+<blockquote>
+<p>Not everything that counts can be counted, and not everything that can be counted counts.</p>
+</blockquote>
+<div class="quote-author">
+<p>William Bruce Cameron, <em>Informal Sociology</em> (1963)</p>
+</div>
+</div>
+</section>
+<section id="quote-1" class="slide level2 quote-slide-dark" data-background-image="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&amp;w=1200&amp;auto=format&amp;fit=crop">
+<h2>Quote</h2>
+<div class="quote-bubble">
+<blockquote>
+<p>The more any quantitative social indicator is used for social decision-making, the more subject it will be to corruption pressures, and the more apt it will be to distort the very processes it is intended to monitor.</p>
+</blockquote>
+<div class="quote-author">
+<p>Donald T. Campbell, on “Campbell’s Law” (1976)</p>
+</div>
+</div>
+</section>
+<section id="thank-you" class="slide level2">
+<h2>Thank you!😊</h2>
+<p><strong>Questions?</strong></p>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Contact me</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><span class="fa-solid fa-envelope fa-fw"></span> <a href="mailto:amelia.zein@psikologi.unair.ac.id">amelia.zein@psikologi.unair.ac.id</a></li>
+<li><span class="fa-solid fa-globe fa-fw"></span> <a href="https://rameliaz.github.io/">https://rameliaz.github.io/</a></li>
+<li><span class="fa-brands fa-discord fa-fw"></span> <a href="https://discord.com/users/807046335613632555"><span class="citation" data-cites="rameliaz">@rameliaz</span></a></li>
+<li><span class="fa-brands fa-keybase fa-fw"></span> <a href="https://keybase.io/rameliaz"><span class="citation" data-cites="rameliaz">@rameliaz</span></a></li>
+<li><span class="fa-brands fa-github fa-fw"></span> <a href="https://github.com/rameliaz"><span class="citation" data-cites="rameliaz">@rameliaz</span></a></li>
+</ul>
+</div>
+</div>
+</div>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Note</strong></p>
+<p><strong>Want to use the template for your presentation?</strong></p>
 </div>
 <div class="callout-content">
-<p><strong>Note:</strong> Download this template at <a href="https://github.com/rameliaz/quarto-unair-theme/tree/main">github.com/rameliaz/quarto-unair-theme</a></p>
+<p>Download this template at <a href="https://github.com/rameliaz/quarto-unair-theme/tree/main">github.com/rameliaz/quarto-unair-theme</a></p>
 </div>
 </div>
 </div>
@@ -709,9 +841,17 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 
       slides.forEach(function(slide) {
 
-        // Handle title slide (detected by Quarto's .title-slide class, not index)
+        // Handle the real title/cover slide. Quarto gives it id="title-slide"
 
-        if (slide.classList.contains('title-slide')) {
+        // but class "quarto-title-block" — NOT class "title-slide". That class
+
+        // is actually assigned by Quarto to any heading-only section-divider
+
+        // slide (`# Heading {background-color="..."}`), so matching on id here
+
+        // is required to avoid also treating those dividers as the cover slide.
+
+        if (slide.id === 'title-slide') {
 
           // Remove any regular logos from title slide
 
@@ -839,13 +979,17 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 
     /* Additional inline styles for logo */
 
+    /* This block loads after airlangga.scss (include-after-body), so it must
+
+       agree with .reveal .slide-logo there or it silently wins the cascade. */
+
     .reveal .slide-logo {
 
       position: absolute !important;
 
       top: -1em !important;  /* Aligns with title */
 
-      right: 15px !important;
+      right: 0 !important;  /* Flush with the h2 yellow rule's right tip */
 
       max-height: 80px !important;
 
@@ -854,16 +998,6 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
       z-index: 100 !important;
 
       object-fit: contain;
-
-    }
-
-    
-
-    /* Ensure title slide doesn't have logo overlap */
-
-    .reveal .title-slide {
-
-      padding-right: 220px;
 
     }
 

@@ -11,11 +11,16 @@ A reproducible Quarto Revealjs presentation theme following Universitas Airlangg
 - ✅ **Professional Design** - Clean academic aesthetic for lectures and conferences
 - ✅ **Smart Logo Management** - Automatic logo placement with white variant for dark backgrounds
 - ✅ **Pre-styled Components** - Section headers, callouts, tables, and code blocks
+- ✅ **11 Slide Layout Formats** - Agenda, section dividers, image bleeds, 3-columns, quotes, and more
 - ✅ **Easy Customization** - Simple to adapt while maintaining brand consistency
 
 ## 📸 Preview
 
-![til](./img/snapshot.gif)
+<video src="./img/snapshot.mp4" controls width="100%">
+  Your browser does not support the video tag. Watch the preview at ./img/snapshot.mp4.
+</video>
+
+See [`example.qmd`](example.qmd) for a live demonstration of every slide layout.
 
 ## 🚀 Installation
 
@@ -33,238 +38,32 @@ This will create a new directory with the template and example presentation.
 quarto add rameliaz/quarto-unair-theme
 ```
 
-## 📝 Usage
-
-### Basic Setup
-
-Create a `.qmd` file with this YAML header:
-
-```yaml
----
-title: "Your Presentation Title"
-subtitle: "Your Subtitle"
-author: "Your Name"
-institute: "Universitas Airlangga"
-date: today
-format: unair-revealjs
----
-
-## Your First Slide
-
-Content here...
-```
-
-### Section Dividers
-
-Create blue section divider slides:
-
-```markdown
-# Section Title {background-color="#14497F"}
-
-This is a section divider slide
-```
-
-The logo automatically switches to white on blue backgrounds!
-
-## 🎨 Brand Colors
-
-| Color | Hex | Usage |
-|-------|-----|-------|
-| **UNAIR Blue** | `#14497F` | Primary color, headings |
-| **UNAIR Yellow** | `#FFCB05` | Accent color, highlights |
-| **Red** | `#E6282B` | Alerts, important callouts |
-
-### Using Brand Colors
-
-```markdown
-- [Blue text]{.unair-blue}
-- [Text with yellow background]{.bg-unair-yellow}
-```
-
-## 📚 Component Examples
-
-### Two-Column Layout
-
-```markdown
-:::: {.columns}
-::: {.column}
-Left column content
-:::
-
-::: {.column}
-Right column content
-:::
-::::
-```
-
-### Callout Boxes
-
-```markdown
-::: {.callout-note}
-**Note:** This is informative
-:::
-
-::: {.callout-warning}
-**Warning:** Important notice
-:::
-
-::: {.callout-important}
-**Important:** Critical information
-:::
-```
-
-### Tables
-
-Tables are automatically styled with UNAIR Blue headers:
-
-```markdown
-| Variable | Mean | SD |
-|----------|------|-----|
-| Age | 25.3 | 4.2 |
-| Score | 78.5 | 12.1 |
-```
-
-### Code Blocks
-
-```markdown
-library(ggplot2)
-
-ggplot(data, aes(x, y)) +
-  geom_point() +
-  theme_minimal()
-```
-
-## ⚙️ Customization
-
-### Adjust Logo Size
-
-In `_extensions/unair/airlangga.scss`:
-
-```scss
-.reveal .slide-logo {
-  max-height: 80px;  // Change this value
-}
-```
-
-### Change Base Font Size
-
-```scss
-$presentation-font-size-root: 32px;  // Adjust as needed
-```
-
-### Modify Colors
-
-```scss
-$unair-blue: #14497F;    // Primary
-$unair-yellow: #FFCB05;  // Accent
-```
-
-## 📋 Advanced Configuration
-
-### Custom Reveal.js Options
-
-```yaml
-format:
-  unair-revealjs:
-    slide-number: true
-    progress: true
-    history: true
-    center: false
-    transition: slide
-    chalkboard: true
-```
-
-### Incremental Lists
-
-```yaml
-format:
-  unair-revealjs:
-    incremental: true
-```
-
-Or per-slide:
-
-```markdown
-::: {.incremental}
-- First item
-- Second item
-:::
-```
+Then add `format: unair-revealjs` to your `.qmd` file's YAML header. See [`QUICKSTART.md`](QUICKSTART.md) for a 5-minute setup walkthrough.
 
 ## 🏗️ Project Structure
 
 ```
-your-project/
+quarto-unair-theme/
 ├── _extensions/
 │   └── unair/
-│       ├── _extension.yml
-│       ├── airlangga.scss
-│       └── theme.html
+│       ├── _extension.yml      # Extension registration
+│       ├── airlangga.scss      # Theme styles (SCSS)
+│       ├── theme.html          # Logo management JS + inline styles
+│       ├── logo.png            # Regular logo
+│       └── logo_white.png      # White logo (dark backgrounds)
 ├── img/
-│   ├── logo.png
-│   └── logo_white.png
-└── presentation.qmd
+│   ├── logo.png                # Logo for local preview
+│   ├── logo_white.png          # White logo for local preview
+│   └── snapshot.mp4            # Preview video
+├── docs/                       # Rendered GitHub Pages output
+├── example.qmd                 # Working demo presentation
+├── _quarto.yml                 # Project configuration
+├── README.md
+├── QUICKSTART.md                # 5-minute setup guide
+├── CHANGELOG.md                 # Version history
+└── LICENSE
 ```
-
-## 🎯 Brand Compliance
-
-This theme follows **Universitas Airlangga Logo Guidelines 2025**:
-
-- ✅ Official color usage (UNAIR Blue primary)
-- ✅ Proper logo placement and spacing  
-- ✅ Approved typography (Segoe UI/Inter)
-- ✅ Reproducible and professional for academic presentation
-
-## 💡 Tips for Best Results
-
-1. **Keep slides simple** - Aim for 3-5 bullet points per slide
-2. **Use section headers** - Break presentation into logical sections
-3. **Leverage callouts** - Highlight key information effectively
-4. **Test your logos** - Ensure both regular and white versions look good
-5. **Consistent formatting** - Use provided classes for uniform styling
-
-## 🐛 Troubleshooting
-
-### Styles not applying
-- Confirm extension is installed: `quarto list extensions`
-- Check YAML format: `format: unair-revealjs`
-- Try: `quarto render --clean presentation.qmd`
-
-### White logo not switching
-- Verify `img/logo_white.png` exists
-- Check section slide uses: `{background-color="#14497F"}`
-- Case-sensitive hex code (lowercase preferred)
-
-## 📖 Examples
-
-See `example.qmd` in this repository for a complete demonstration of all features.
-
-## 🤝 Contributing
-
-Contributions welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details.
-
-The UNAIR logo and brand elements remain property of Universitas Airlangga.
-
-## 👏 Credits
-
-- **Theme created by:** Rizqy Amelia Zein with Claude Sonnet 3.5
-- **Based on:** [Universitas Airlangga Logo Guidelines 2025](https://drive.google.com/file/d/1KcRztcsJsI0zKPWvENze6Z8dyeXw6NWz/view)  
-
-## 📬 Contact
-
-For questions or support:
-- Open an [issue](https://github.com/rameliaz/quarto-unair-theme/issues)
-- Contact me at [amelia.zein@psikologi.unair.ac.id](mailto:amelia.zein@psikologi.unair.ac.id)
-
----
-
-**Keywords:** quarto, revealjs, presentation, theme, universitas-airlangga, unair, indonesia, academic, slides
+MIT License - see [LICENSE](LICENSE) for details. The UNAIR logo and brand elements remain property of Universitas Airlangga. I prompted Claude Sonnet 5 to improve the theme.

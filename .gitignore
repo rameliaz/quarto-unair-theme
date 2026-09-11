@@ -50,3 +50,7 @@ PACKAGE_SUMMARY.md
 # Render artifacts (root-level copies from output-dir resources)
 /logo.png
 /logo_white.png
+**/*.quarto_ipynb
+
+# Local reference material (third-party templates, not part of this theme)
+/example/

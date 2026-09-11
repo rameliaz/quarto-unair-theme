@@ -30,8 +30,12 @@ function manageLogos() {
   const slides = document.querySelectorAll('.reveal .slides section');
 
   slides.forEach(function(slide) {
-    // Handle title slide (detected by Quarto's .title-slide class, not index)
-    if (slide.classList.contains('title-slide')) {
+    // Handle the real title/cover slide. Quarto gives it id="title-slide"
+    // but class "quarto-title-block" — NOT class "title-slide". That class
+    // is actually assigned by Quarto to any heading-only section-divider
+    // slide (`# Heading {background-color="..."}`), so matching on id here
+    // is required to avoid also treating those dividers as the cover slide.
+    if (slide.id === 'title-slide') {
       // Remove any regular logos from title slide
       const regularLogos = slide.querySelectorAll('.slide-logo');
       regularLogos.forEach(logo => logo.remove());
@@ -95,19 +99,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <style>
 /* Additional inline styles for logo */
+/* This block loads after airlangga.scss (include-after-body), so it must
+   agree with .reveal .slide-logo there or it silently wins the cascade. */
 .reveal .slide-logo {
   position: absolute !important;
   top: -1em !important;  /* Aligns with title */
-  right: 15px !important;
+  right: 0 !important;  /* Flush with the h2 yellow rule's right tip */
   max-height: 80px !important;
   max-width: 200px !important;
   z-index: 100 !important;
   object-fit: contain;
-}
-
-/* Ensure title slide doesn't have logo overlap */
-.reveal .title-slide {
-  padding-right: 220px;
 }
 
 /* Section title slide styling */

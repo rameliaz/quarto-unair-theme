@@ -4,8 +4,6 @@ subtitle: "A Professional Quarto Presentation Template"
 author: "Rizqy Amelia Zein"
 institute: 
   - "Department of Psychology, Universitas Airlangga"
-  - "Sains Terbuka Airlangga"
-  - "Research Data & Methods Team, Center for Advanced Internet Studies"
 date: today
 format:
   unair-revealjs:
@@ -152,16 +150,157 @@ Combine with brand colors:
 
 Sections help organize your presentation
 
-## Thank You
+# New Layout Formats {background-color="#14497F"}
+
+Opt-in, full-slide layouts for richer presentations
+
+## Agenda {.agenda-slide}
+
+1. Background & Motivation
+2. Research Methodology
+3. Findings & Discussion
+4. Conclusions
+5. Q&A
+
+## Field Study Results {.section-slide}
+
+::: {.section-number}
+01
+:::
+
+## Participant Recruitment {.section-slide-dark data-background-image="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop"}
+
+::: {.section-number}
+02
+:::
+
+## Key Findings {.text-image}
+
+::: columns
+::: {.column}
+- Effect sizes were consistent across cohorts
+- Replication held under pre-registered analysis
+- Results support the proposed mechanism
+:::
+
+::: {.column}
+![](https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop)
+:::
+:::
+
+## {.image-text}
+
+::: columns
+::: {.column}
+![](https://images.unsplash.com/photo-1571260899304-425eee4c7efc?q=80&w=800&auto=format&fit=crop)
+:::
+
+::: {.column}
+### Data Collection
+
+Field data were gathered across three sites using a standardized protocol, with inter-rater reliability checks throughout.
+:::
+:::
+
+## Overview {.text-slide-bg}
+
+::: {.lead}
+A quick summary before we dive into the details.
+:::
+
+::: {.content-box}
+This study examines how open science practices affect replication rates in psychological research, drawing on a pre-registered, multi-site design.
+:::
+
+## Our Pillars {.columns-slide}
+
+::: {.lead}
+Three principles guide this research program.
+:::
+
+::: {.columns-area}
+::: {.col-item}
+[🎓]{.col-icon}
+
+### Rigor
+
+Pre-registered designs and transparent analysis pipelines.
+:::
+
+::: {.col-item}
+[🤝]{.col-icon}
+
+### Collaboration
+
+Multi-site partnerships across Indonesian universities.
+:::
+
+::: {.col-item}
+[📊]{.col-icon}
+
+### Openness
+
+Data, code, and materials shared on publication.
+:::
+:::
+
+## Campus Highlights {.overview-slide}
+
+::: {.overview-grid}
+::: {.overview-item}
+![](https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=600&auto=format&fit=crop)
+
+Main Campus, Surabaya
+:::
+
+::: {.overview-item}
+![](https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600&auto=format&fit=crop)
+
+Research Laboratory
+:::
+
+::: {.overview-item}
+![](https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=600&auto=format&fit=crop)
+
+Student Life
+:::
+:::
+
+## Quote {.quote-slide}
+
+::: {.quote-bubble}
+> Not everything that counts can be counted, and not everything that can be counted counts.
+
+::: {.quote-author}
+William Bruce Cameron, *Informal Sociology* (1963)
+:::
+:::
+
+## Quote {.quote-slide-dark data-background-image="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=1200&auto=format&fit=crop"}
+
+::: {.quote-bubble}
+> The more any quantitative social indicator is used for social decision-making, the more subject it will be to corruption pressures, and the more apt it will be to distort the very processes it is intended to monitor.
+
+::: {.quote-author}
+Donald T. Campbell, on "Campbell's Law" (1976)
+:::
+:::
+
+## Thank you!😊
 
 **Questions?**
 
-Contact:
+::: {.callout-tip}
+### Contact me
 
-- Email: [amelia.zein@psikologi.unair.ac.id](mailto:amelia.zein@psikologi.unair.ac.id)
-- Website: [https://rameliaz.github.io/](https://rameliaz.github.io/)
-- Discord: [@rameliaz](https://discord.com/users/807046335613632555)
+- [ ]{.fa-solid .fa-envelope .fa-fw} [amelia.zein@psikologi.unair.ac.id](mailto:amelia.zein@psikologi.unair.ac.id)
+- [ ]{.fa-solid .fa-globe .fa-fw} [https://rameliaz.github.io/](https://rameliaz.github.io/)
+- [ ]{.fa-brands .fa-discord .fa-fw} [@rameliaz](https://discord.com/users/807046335613632555)
+- [ ]{.fa-brands .fa-keybase .fa-fw} [@rameliaz](https://keybase.io/rameliaz)
+- [ ]{.fa-brands .fa-github .fa-fw} [@rameliaz](https://github.com/rameliaz)
+:::
 
 ::: {.callout-note}
-**Note:** Download this template at [github.com/rameliaz/quarto-unair-theme](https://github.com/rameliaz/quarto-unair-theme/tree/main)
+### Want to use the template for your presentation?
+Download this template at [github.com/rameliaz/quarto-unair-theme](https://github.com/rameliaz/quarto-unair-theme/tree/main)
 :::

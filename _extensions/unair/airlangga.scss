@@ -29,11 +29,18 @@ $code-color: $unair-blue;
 
 /*-- scss:rules --*/
 
-// Logo positioning in top-right corner
+// Logo positioning in top-right corner. Relies on the slide's <section>
+// filling the full slide box (true for the real cover slide — handled
+// separately below — and for regular/custom-format content slides, but NOT
+// for heading-only "center"-class section dividers, which shrink-wrap to
+// content size instead; those get their own layout further down).
 .reveal .slide-logo {
   position: absolute !important;
   top: -1em !important;  // Use em units to match text positioning
-  right: 15px !important;
+  // Flush with the section's own right edge, so the logo's right edge
+  // lines up with the tip of the h2 yellow rule (which extends to that
+  // same edge on a default slide — no side padding on the section).
+  right: 0 !important;
   max-height: 80px;
   z-index: 100;
   margin-top: 0 !important;
@@ -41,18 +48,50 @@ $code-color: $unair-blue;
   box-shadow: none !important;
 }
 
-// Move logo to left for section divider slides
-.reveal section[data-background-color] .slide-logo {
-  left: 15px !important;
-  right: auto !important;
+// Section divider slides (`# Heading {background-color="..."}`): stack the
+// logo directly above the heading instead of floating it in a fixed corner.
+// These are "center"-class slides, so Reveal shrink-wraps their <section> to
+// content size and centers that box on the slide — meaning viewport-relative
+// positioning (fixed/absolute) has no reliable relationship to where the
+// text actually lands. Laying the logo out as a normal flow item right
+// before the heading sidesteps that: it always ends up close to the text,
+// wherever that text is centered.
+.reveal .slides section[data-background-color] {
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .slide-logo {
+    position: static !important;
+    order: -1;
+    margin-bottom: 0.4em !important;
+    max-height: 56px !important;
+    max-width: 150px !important;
+  }
+
+  > *:not(.slide-logo) {
+    margin: 0 !important;
+  }
+
+  > * + *:not(.slide-logo) {
+    margin-top: 0.3em !important;
+  }
 }
 
-// Title slide styling
-.reveal .title-slide {
-  text-align: left;
-  padding-top: 150px; // Make room for logo
-  
+// Hide the slide number on section dividers, matching the other divider
+// formats.
+.reveal:has(section[data-background-color].present) .slide-number {
+  display: none !important;
+}
+
+// Title slide styling. Quarto always gives the real cover slide
+// id="title-slide" (but NOT class "title-slide" — see note above), so we
+// target it by id to avoid also matching section-divider slides.
+.reveal #title-slide {
+  text-align: center;
+
   h1.title {
+    display: inline-block;
     color: $unair-blue;
     font-size: 2em;
     font-weight: 700;
@@ -60,38 +99,43 @@ $code-color: $unair-blue;
     border-bottom: 4px solid $unair-yellow;
     padding-bottom: 0.3em;
   }
-  
+
   p.subtitle {
     color: darken($unair-blue, 5%);
     font-size: 1.1em;
     margin-bottom: 2em;
   }
 
-  p.author {
+  .quarto-title-author-name {
     color: #666;
-    font-size: 1.0em;
-    margin-bottom: 0.5em;
+    font-size: 1em;
+    font-weight: 600;
+    margin-bottom: 0.2em;
   }
-  
+
+  p.quarto-title-affiliation {
+    color: #666;
+    font-size: 0.85em;
+    font-style: italic;
+    margin: 0.1em 0;
+  }
+
   p.date {
     color: #666;
     font-size: 0.9em;
-  }
-  
-  p.institute {
-    color: #666;
-    font-size: 0.95em;
-    font-style: italic;
+    margin-top: 1em;
   }
 }
 
-// logo for title slide
+// Large, centered logo on the title slide (inserted as the first child by
+// theme.html's manageLogos(), so it stacks above the title/subtitle/author).
 .reveal .title-slide-logo {
-     max-width: 320px;
-     max-height: 144px;
-     margin: 0 auto 1em auto;
-     box-shadow: none !important;
-   }
+  display: block;
+  max-width: 400px;
+  max-height: 180px;
+  margin: 0 auto 1.2em auto;
+  box-shadow: none !important;
+}
 
 // Section header slides
 .reveal .section-title-slide {
@@ -321,4 +365,675 @@ $code-color: $unair-blue;
 .callout-important {
   background-color: lighten($unair-red, 40%);
   border-left-color: $unair-red;
+}
+
+// ════════════════════════════════════════════════════════════
+// SLIDE LAYOUT FORMATS
+// Opt-in, full-slide layouts. Apply the class on the heading that
+// starts the slide, e.g. `## Agenda {.agenda-slide}` — Quarto/Reveal
+// transfers heading attributes to the enclosing <section>. See
+// README.md for full markup examples of each format.
+// ════════════════════════════════════════════════════════════
+
+$unair-grey-light: #F0F0F0;
+$unair-grey-dark: #666666;
+
+// These layouts carry their own header/branding treatment, so the
+// floating logo, footer and slide-number would clash with them.
+// NOTE: `section.<class>.present`, not just `.<class>.present` — reveal.js
+// keeps a parallel `.slide-background` <div> per slide that copies the same
+// classes (plus its own stale `.present`, which lingers after navigating
+// away), so an unqualified selector matches that background permanently
+// once the slide has been visited, not just while it's actually showing.
+.reveal:has(section.section-slide.present) .slide-logo,
+.reveal:has(section.section-slide.present) .footer,
+.reveal:has(section.section-slide.present) .slide-number,
+.reveal:has(section.section-slide-dark.present) .slide-logo,
+.reveal:has(section.section-slide-dark.present) .footer,
+.reveal:has(section.section-slide-dark.present) .slide-number,
+.reveal:has(section.quote-slide.present) .slide-logo,
+.reveal:has(section.quote-slide.present) .footer,
+.reveal:has(section.quote-slide.present) .slide-number,
+.reveal:has(section.quote-slide-dark.present) .slide-logo,
+.reveal:has(section.quote-slide-dark.present) .footer,
+.reveal:has(section.quote-slide-dark.present) .slide-number,
+.reveal:has(section.overview-slide.present) .slide-logo,
+.reveal:has(section.overview-slide.present) .footer,
+.reveal:has(section.overview-slide.present) .slide-number,
+.reveal:has(section.closing-slide.present) .slide-logo,
+.reveal:has(section.closing-slide.present) .footer,
+.reveal:has(section.closing-slide.present) .slide-number {
+  display: none !important;
+}
+
+// The agenda's own left stripe already carries the "AGENDA" label; the
+// corner logo isn't needed here (unlike the other layouts above, the
+// slide number stays — this slide isn't a section divider).
+.reveal:has(section.agenda-slide.present) .slide-logo {
+  display: none !important;
+}
+
+// ── Agenda ────────────────────────────────────────────────────
+// Usage: ## Agenda {.agenda-slide}
+//        1. First item
+//        2. Second item
+.reveal .slides section.agenda-slide {
+  padding: 0 !important;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 28%;
+    height: 100%;
+    background-color: $unair-grey-light;
+    border-right: 4px solid $unair-yellow;
+    z-index: 0;
+  }
+
+  > h2 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 28%;
+    padding: 6% 7% !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+    color: $unair-blue !important;
+    font-size: 0.8em;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none !important;
+    z-index: 1;
+  }
+
+  ol {
+    position: absolute;
+    left: 32%;
+    right: 5%;
+    top: 10%;
+    bottom: 8%;
+    z-index: 1;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    counter-reset: agenda-ctr;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.8em;
+      margin: 0 !important;
+      padding: 0.6em 0;
+      font-size: 0.9em;
+      border-bottom: 1px solid rgba($unair-grey-dark, 0.2);
+      counter-increment: agenda-ctr;
+
+      &:last-child { border-bottom: none; }
+
+      &::before {
+        content: counter(agenda-ctr, decimal-leading-zero);
+        color: $unair-blue;
+        font-size: 1.8em;
+        font-weight: 700;
+        min-width: 1.3em;
+        text-align: right;
+        flex-shrink: 0;
+        line-height: 1;
+      }
+    }
+  }
+}
+
+// ── Section divider — light ──────────────────────────────────
+// Usage: ## Results & Discussion {.section-slide}
+//        ::: {.section-number}
+//        02
+//        :::
+.reveal .slides section.section-slide {
+  background-color: $unair-grey-light;
+  padding: 0 !important;
+  overflow: hidden !important;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 30%;
+    height: 100%;
+    background: $unair-white;
+    z-index: 0;
+  }
+
+  .section-number {
+    position: absolute;
+    bottom: -5%;
+    left: 1%;
+    font-size: 13em;
+    font-weight: 700;
+    color: rgba($unair-blue, 0.08);
+    line-height: 1;
+    z-index: 1;
+    user-select: none;
+  }
+
+  > h2 {
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    transform: translateY(-50%);
+    width: 55%;
+    z-index: 2;
+    background: $unair-blue;
+    color: $unair-white !important;
+    border: none !important;
+    border-left: 8px solid $unair-yellow;
+    border-radius: 12px;
+    margin: 0 !important;
+    padding: 5% 6% !important;
+    font-size: 1.5em;
+    font-weight: 700;
+    line-height: 1.25;
+    box-sizing: border-box;
+
+    strong, b { color: inherit !important; }
+  }
+}
+
+// ── Section divider — dark / photo background ────────────────
+// Usage: ## Field Study Results {.section-slide-dark data-background-image="photo.jpg"}
+.reveal .slides section.section-slide-dark.present {
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  overflow: hidden !important;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 35%;
+    height: 100%;
+    background: $unair-blue;
+    z-index: 1;
+  }
+
+  .section-number {
+    position: absolute;
+    bottom: -8%;
+    left: 1%;
+    font-size: 13em;
+    font-weight: 700;
+    color: rgba($unair-white, 0.18);
+    line-height: 1;
+    z-index: 2;
+    user-select: none;
+  }
+
+  > h2 {
+    position: relative;
+    z-index: 2;
+    background: $unair-white;
+    color: $unair-blue !important;
+    border: none !important;
+    border-left: 8px solid $unair-yellow;
+    border-radius: 12px;
+    margin: 0 0 0 40% !important;
+    width: 50%;
+    padding: 5% 6% !important;
+    font-size: 1.5em;
+    font-weight: 700;
+    line-height: 1.25;
+    box-sizing: border-box;
+  }
+}
+
+// ── Text + image (text left, image bleeds to the right edge) ─
+// Usage: ## Findings {.text-image}
+//        ::: columns
+//        ::: {.column} Text content :::
+//        ::: {.column} ![](photo.jpg) :::
+//        :::
+.reveal .slides section.text-image.present {
+  padding: 0 !important;
+  // No overflow: hidden here — the bled image is already fully contained
+  // by its flex column (object-fit: cover fills exactly, no natural
+  // overflow), and hiding overflow would also clip the corner logo, which
+  // deliberately pokes slightly above the section's own top edge.
+  display: flex !important;
+  flex-direction: column !important;
+
+  > h2 {
+    flex-shrink: 0;
+    width: 55%;
+    padding: 4% 5% 1% !important;
+    margin: 0 !important;
+    border: none !important;
+    box-sizing: border-box;
+  }
+
+  .columns {
+    flex: 1;
+    min-height: 0;
+    display: flex !important;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+
+    .column:first-child {
+      flex: 0 0 55%;
+      width: 55%;
+      padding: 0 4% 4% 5%;
+      box-sizing: border-box;
+
+      p { font-size: 0.85em; line-height: 1.5; margin-top: 0; }
+      ul, ol { font-size: 0.8em; }
+    }
+
+    .column:last-child {
+      flex: 1;
+      overflow: hidden;
+      padding: 0 !important;
+
+      p, figure {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        display: flex;
+        align-items: stretch;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        box-shadow: none;
+        display: block;
+        flex: 1;
+      }
+    }
+  }
+}
+
+// ── Image + text (image bleeds to the left edge, text right) ─
+// Usage: ## {.image-text}
+//        ::: columns
+//        ::: {.column} ![](photo.jpg) :::
+//        ::: {.column} ### Findings \n Text content :::
+//        :::
+.reveal .slides section.image-text.present {
+  padding: 0 !important;
+  // No overflow: hidden here — see the comment on .text-image above.
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch;
+
+  > h2 { display: none; }
+
+  .columns {
+    flex: 1;
+    min-height: 0;
+    display: flex !important;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+
+    .column:first-child {
+      flex: 1;
+      overflow: hidden;
+      padding: 0 !important;
+
+      p, figure {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        display: flex;
+        align-items: stretch;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        box-shadow: none;
+        display: block;
+        flex: 1;
+      }
+    }
+
+    .column:last-child {
+      flex: 1;
+      padding: 13% 6% 5% 4%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+
+      h2, h3 {
+        margin-top: 0 !important;
+        margin-bottom: 0.4em;
+        padding-right: 0 !important;
+        border: none !important;
+      }
+
+      p { font-size: 0.85em; line-height: 1.5; }
+      ul, ol { font-size: 0.8em; }
+    }
+  }
+}
+
+// ── Text slide with a shaded content box ─────────────────────
+// Usage: ## Overview {.text-slide-bg}
+//        ::: {.lead} Introductory sentence :::
+//        ::: {.content-box} Supporting detail :::
+.reveal .slides section.text-slide-bg {
+  // border-box is required: Reveal gives sections an explicit width/height
+  // with the browser default content-box model, so percentage padding on
+  // the section itself would otherwise add to that size instead of fitting
+  // inside it — overflowing the slide and throwing off the logo position.
+  box-sizing: border-box !important;
+  padding: 5% 6% !important;
+
+  // The default logo offset assumes the heading sits flush with the
+  // section's top/right edges; this slide's own padding insets the heading
+  // instead, so the logo needs the same nudge to stay aligned with it.
+  // `right: 6%` matches the section's own padding-right above — percentages
+  // for both resolve against the same containing-block width, so the logo's
+  // right edge lands exactly on the yellow rule's tip either way.
+  .slide-logo {
+    top: 26px !important;
+    right: 6% !important;
+  }
+
+  h2 { margin-bottom: 0.3em; }
+
+  .lead {
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.5;
+    margin-bottom: 0.8em;
+  }
+
+  .content-box {
+    background: $unair-grey-light;
+    border-left: 6px solid $unair-yellow;
+    border-radius: 6px;
+    padding: 4% 5%;
+    font-size: 0.85em;
+    line-height: 1.55;
+  }
+}
+
+// ── Three columns (icon + heading + text) ─────────────────────
+// Usage: ## Pillars {.columns-slide}
+//        ::: {.columns-area}
+//        ::: {.col-item}
+//        [🎓]{.col-icon}
+//        ### Education
+//        Text
+//        :::
+//        :::
+.reveal .slides section.columns-slide {
+  // border-box — see the comment on .text-slide-bg above.
+  box-sizing: border-box !important;
+  padding: 5% 6% !important;
+
+  // Logo offset — see the comment on .text-slide-bg above.
+  .slide-logo {
+    top: 26px !important;
+    right: 6% !important;
+  }
+
+  h2 { margin-bottom: 0.5em; }
+
+  .lead {
+    font-size: 0.9em;
+    font-weight: 300;
+    margin-bottom: 1em;
+    max-width: 70%;
+  }
+
+  .columns-area {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2em;
+    background: $unair-grey-light;
+    padding: 4%;
+    border-radius: 6px;
+
+    .col-item {
+      text-align: center;
+
+      .col-icon {
+        font-size: 2em;
+        margin-bottom: 0.3em;
+        display: block;
+        color: $unair-red;
+      }
+      h3 {
+        color: $unair-blue;
+        font-size: 0.85em;
+        font-weight: 700;
+        margin: 0.2em 0 0.3em;
+      }
+      p {
+        font-size: 0.7em;
+        line-height: 1.45;
+        margin: 0;
+      }
+    }
+  }
+}
+
+// ── Overview grid (3 images with captions) ────────────────────
+// Usage: ## Campus Highlights {.overview-slide}
+//        ::: {.overview-grid}
+//        ::: {.overview-item} ![](img.jpg) Caption text :::
+//        :::
+.reveal .slides section.overview-slide {
+  padding: 0 !important;
+
+  h2 {
+    background: $unair-blue;
+    color: $unair-white !important;
+    padding: 3% 5% !important;
+    margin: 0 !important;
+    text-align: center;
+    border: none !important;
+    font-size: 1.3em;
+  }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    padding: 3% 5% 4%;
+
+    .overview-item {
+      padding: 1em;
+      text-align: center;
+
+      img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        box-shadow: none;
+        display: block;
+        margin-bottom: 0.6em;
+      }
+      p {
+        font-size: 0.75em;
+        margin: 0;
+        line-height: 1.35;
+      }
+    }
+  }
+}
+
+// ── Quote — light ───────────────────────────────────────────
+// Usage: ## Quote {.quote-slide}
+//        ::: {.quote-bubble}
+//        > Quoted text
+//        ::: {.quote-author} Name, Title :::
+//        :::
+.reveal .slides section.quote-slide.present {
+  background: $unair-grey-light;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden !important;
+
+  > h2 { display: none; }
+
+  .quote-bubble {
+    background: $unair-white;
+    border-radius: 12px;
+    border-top: 6px solid $unair-yellow;
+    padding: 6% 7%;
+    max-width: 70%;
+    position: relative;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+
+    &::before {
+      content: '\201C';
+      position: absolute;
+      top: 0.05em;
+      left: 0.4em;
+      font-size: 3em;
+      color: $unair-blue;
+      line-height: 1;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    blockquote {
+      margin: 0.6em 0 0;
+      padding: 0;
+      border: none;
+      background: none;
+      font-size: 0.95em;
+      font-weight: 300;
+      font-style: normal;
+      line-height: 1.6;
+      color: inherit;
+    }
+
+    .quote-author {
+      margin-top: 1.1em;
+      font-size: 0.65em;
+      color: $unair-blue;
+      font-weight: 700;
+    }
+  }
+}
+
+// ── Quote — dark / photo background ──────────────────────────
+// Usage: ## Quote {.quote-slide-dark data-background-image="photo.jpg"}
+//        ::: {.quote-bubble} ... :::
+.reveal .slides section.quote-slide-dark.present {
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden !important;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba($unair-black, 0.5);
+    z-index: 0;
+  }
+
+  > h2 { display: none; }
+
+  .quote-bubble {
+    position: relative;
+    z-index: 1;
+    background: rgba($unair-white, 0.95);
+    border-radius: 12px;
+    border-top: 6px solid $unair-yellow;
+    padding: 6% 7%;
+    max-width: 70%;
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+
+    &::before {
+      content: '\201C';
+      position: absolute;
+      top: 0.05em;
+      left: 0.4em;
+      font-size: 3em;
+      color: $unair-blue;
+      line-height: 1;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    blockquote {
+      margin: 0.6em 0 0;
+      padding: 0;
+      border: none;
+      background: none;
+      font-size: 0.95em;
+      font-weight: 300;
+      font-style: normal;
+      line-height: 1.6;
+      color: #333333;
+    }
+
+    .quote-author {
+      margin-top: 1.1em;
+      font-size: 0.65em;
+      color: $unair-blue;
+      font-weight: 700;
+    }
+  }
+}
+
+// ── Closing / contact slide ────────────────────────────────────
+// Usage: ## Thank You {.closing-slide}
+//        ::: {.closing-contact}
+//        Contact details / links
+//        :::
+.reveal .slides section.closing-slide.present {
+  padding: 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch;
+
+  > h2 {
+    flex: 1;
+    display: flex !important;
+    align-items: center;
+    background: linear-gradient(135deg, $unair-blue 0%, darken($unair-blue, 15%) 100%);
+    color: $unair-white !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 6% 8% !important;
+    box-sizing: border-box;
+    font-size: 1.8em;
+
+    strong, b { color: $unair-yellow !important; }
+  }
+
+  .closing-contact {
+    width: 40%;
+    flex-shrink: 0;
+    background: $unair-white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5% 6%;
+    box-sizing: border-box;
+
+    p { font-size: 0.85em; line-height: 1.7; margin: 0.3em 0; }
+    a { color: $unair-blue; }
+  }
 }

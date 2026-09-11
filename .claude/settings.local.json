@@ -40,7 +40,8 @@
       "Bash(ls \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs/_extensions/unair/\")",
       "Bash(wc -l \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs\\\\index.html\")",
       "Bash(head -5 \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs\\\\index.html\")",
-      "Bash(ls \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs/.nojekyll\")"
+      "Bash(ls \"E:\\\\Website & Templat\\\\quarto-unair-theme\\\\docs/.nojekyll\")",
+      "Bash(ls \"G:\\\\My Drive\\\\02 ID Ngajar dan Admin\\\\01 Mengajar\\\\02 Statistik\\\\mg-sem-workshop\\\\_extensions\" 2>/dev/null)"
     ]
   }
 }
