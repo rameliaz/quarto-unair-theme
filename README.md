@@ -18,7 +18,7 @@ A reproducible Quarto Revealjs presentation theme following Universitas Airlangg
 
 ![til](./img/snapshot.gif)
 
-See [`example.qmd`](example.qmd) for a live demonstration of every slide layout.
+See [`example.qmd`](https://rameliaz.github.io/quarto-unair-theme/) for a live demonstration of every slide layout.
 
 ## 🚀 Installation
 

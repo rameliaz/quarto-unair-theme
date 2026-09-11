@@ -12,6 +12,8 @@ format:
     history: true
     center: false
     transition: slide
+    auto-stretch: false
+    chalkboard: true
 ---
 
 ## Introduction
