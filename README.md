@@ -16,9 +16,7 @@ A reproducible Quarto Revealjs presentation theme following Universitas Airlangg
 
 ## 📸 Preview
 
-<video src="./img/snapshot.mp4" controls width="100%">
-  Your browser does not support the video tag. Watch the preview at ./img/snapshot.mp4.
-</video>
+![til](./img/snapshot.gif)
 
 See [`example.qmd`](example.qmd) for a live demonstration of every slide layout.
 
@@ -54,7 +52,7 @@ quarto-unair-theme/
 ├── img/
 │   ├── logo.png                # Logo for local preview
 │   ├── logo_white.png          # White logo for local preview
-│   └── snapshot.mp4            # Preview video
+│   └── snapshot.gif            # Preview animation
 ├── docs/                       # Rendered GitHub Pages output
 ├── example.qmd                 # Working demo presentation
 ├── _quarto.yml                 # Project configuration
