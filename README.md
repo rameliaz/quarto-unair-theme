@@ -38,6 +38,8 @@ quarto add rameliaz/quarto-unair-theme
 
 Then add `format: unair-revealjs` to your `.qmd` file's YAML header. See [`QUICKSTART.md`](QUICKSTART.md) for a 5-minute setup walkthrough.
 
+> ⚠️ **Manual step required:** `quarto add` only installs the `_extensions/` folder. The [`img/`](img/) folder (containing `logo.png` and `logo_white.png`) is **not** downloaded automatically, so you must manually download it from this repo and place it in your project root. Without it, the UNAIR logo will not render on your slides.
+
 ## 🏗️ Project Structure
 
 ```

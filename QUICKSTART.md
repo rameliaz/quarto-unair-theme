@@ -26,6 +26,8 @@ cd your-project
 quarto add rameliaz/quarto-unair-theme
 ```
 
+> ⚠️ **Important:** `quarto add` only installs the `_extensions/` folder, and does **not** include the [`img/`](https://github.com/rameliaz/quarto-unair-theme/tree/main/img) folder. Manually download `img/` (containing `logo.png` and `logo_white.png`) from the GitHub repo and place it in your project root, or the UNAIR logo won't appear on your slides.
+
 ## Step 3: Create Your Presentation
 
 Create `presentation.qmd`:
