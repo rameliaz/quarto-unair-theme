@@ -473,13 +473,21 @@ $unair-grey-dark: #666666;
     counter-reset: agenda-ctr;
 
     li {
-      display: flex;
-      align-items: baseline;
-      gap: 1em;
+      // A flex `li` would look like the natural choice for "number, text,
+      // dot" — but per the flexbox spec, any inline element (the <strong>/
+      // <em> markup inside the item text) that's a direct child of a flex
+      // container is promoted to its OWN flex item instead of staying
+      // inline with the surrounding text. That splits "plain text" and
+      // "bold text" into two independently-wrapping columns instead of one
+      // flowing, left-aligned paragraph. Absolutely positioning the number
+      // and dot instead leaves the text as plain block content, so mixed
+      // bold/italic markup just wraps normally.
+      position: relative;
       margin: 0 !important;
-      padding: 0.7em 0;
+      padding: 0.7em 2em 0.7em 3.6em;
       font-size: 1em;
       font-weight: 600;
+      text-align: left;
       border-bottom: 1px solid rgba($unair-grey-dark, 0.15);
       counter-increment: agenda-ctr;
 
@@ -487,23 +495,27 @@ $unair-grey-dark: #666666;
 
       &::before {
         content: counter(agenda-ctr, decimal-leading-zero);
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
         font-family: $font-family-sans-serif;
         color: $unair-blue;
         font-size: 2.1em;
         font-weight: 700;
-        min-width: 1.6em;
         line-height: 1;
-        flex-shrink: 0;
       }
 
       &::after {
         content: '';
-        margin-left: auto;
+        position: absolute;
+        right: 0.3em;
+        top: 50%;
+        transform: translateY(-50%);
         width: 6px;
         height: 6px;
         border-radius: 50%;
         background: $unair-yellow;
-        flex-shrink: 0;
       }
     }
 
