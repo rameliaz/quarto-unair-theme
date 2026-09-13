@@ -411,10 +411,11 @@ $unair-grey-dark: #666666;
   display: none !important;
 }
 
-// The agenda's own vertical rule already carries the "AGENDA" label; the
-// corner logo isn't needed here (unlike the other layouts above, the
-// slide number stays — this slide isn't a section divider).
-.reveal:has(section.agenda-slide.present) .slide-logo {
+// The agenda's own vertical rule already carries the "AGENDA" label, so
+// the corner logo isn't needed here; the item count varies per talk, so
+// a fixed slide number next to a self-numbered list reads as redundant.
+.reveal:has(section.agenda-slide.present) .slide-logo,
+.reveal:has(section.agenda-slide.present) .slide-number {
   display: none !important;
 }
 
@@ -505,6 +506,17 @@ $unair-grey-dark: #666666;
         flex-shrink: 0;
       }
     }
+
+    // Item count varies per talk (a short session might list 5 points, a
+    // full-semester syllabus 10+), but the block above ties every size —
+    // numeral, label text, padding, gap — to the `ol`'s own font-size via
+    // `em`, so scaling that one value down as items pile up keeps the
+    // whole list fitting the fixed-height slide instead of overflowing it.
+    // `:has(li:nth-child(n))` reads as "there are at least n items"; later,
+    // more-specific-count rules sit after earlier ones so they win the tie.
+    &:has(li:nth-child(7)) { font-size: 0.82em; }
+    &:has(li:nth-child(9)) { font-size: 0.68em; }
+    &:has(li:nth-child(11)) { font-size: 0.56em; }
   }
 }
 
@@ -1119,7 +1131,7 @@ $unair-keypattern-rows: 40;               // enough to cover slide + both bleeds
 
   p.subtitle {
     color: $unair-blue;
-    margin: 0.1em 0 0;
+    margin: 0.6em 0 0;
     font-size: 1.15em;
     font-weight: 400;
     line-height: 1.2;
@@ -1130,7 +1142,7 @@ $unair-keypattern-rows: 40;               // enough to cover slide + both bleeds
     justify-content: flex-start;
     flex-wrap: wrap;
     gap: 0 2em;
-    margin-top: 1.2em;
+    margin-top: 1.6em;
     font-size: 0.7em;
     line-height: 1.5;
   }
