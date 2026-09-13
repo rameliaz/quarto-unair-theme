@@ -30,6 +30,13 @@ function manageLogos() {
   const slides = document.querySelectorAll('.reveal .slides section');
 
   slides.forEach(function(slide) {
+    // Vertical-stack wrappers aren't slides themselves; a logo here would
+    // show on top of each child slide's own logo.
+    if (slide.querySelector('section')) {
+      slide.querySelectorAll(':scope > .slide-logo').forEach(logo => logo.remove());
+      return;
+    }
+
     // Handle the real title/cover slide. Quarto gives it id="title-slide"
     // but class "quarto-title-block" — NOT class "title-slide". That class
     // is actually assigned by Quarto to any heading-only section-divider
@@ -59,9 +66,9 @@ function manageLogos() {
       existingLogos.forEach(logo => logo.remove());
     }
 
-    // Check background color
+    // White logo on UNAIR-blue slides: blue dividers and the closing slide
     const bgColor = slide.getAttribute('data-background-color');
-    const logoSrc = (bgColor === '#14497F' || bgColor === '#14497f')
+    const logoSrc = (bgColor === '#14497F' || bgColor === '#14497f' || slide.classList.contains('closing-slide'))
       ? _unairExtPath + 'logo_white.png'
       : _unairExtPath + 'logo.png';
     
@@ -80,15 +87,103 @@ function manageLogos() {
   });
 }
 
+// Sidebar label: the talk's short title. Prefers the `short-title` YAML
+// field (surfaced as a <meta> tag by unair.lua); falls back to the full title
+// from the title slide (the CSS cuts it off with an ellipsis if too long).
+function _unairShortTitle() {
+  var meta = document.querySelector('meta[name="unair-short-title"]');
+  if (meta && meta.content.trim()) return meta.content.trim();
+
+  var title = document.querySelector('#title-slide .title');
+  return title ? title.textContent.replace(/\s+/g, ' ').trim() : '';
+}
+
+// Slides that keep their own full-bleed treatment and get no sidebar.
+// Section dividers are matched by data-background-color, the cover by id
+// (see manageLogos above for why not by class).
+var UNAIR_SIDEBAR_EXCLUDED_CLASSES = ['quote-slide', 'quote-slide-dark', 'agenda-slide', 'closing-slide', 'no-sidebar'];
+
+// Brand sidebar on the right edge of each content slide, after the page
+// frame in the UNAIR guideline PDF: key graphic + the talk's short title on a
+// blue bar, slide number on a yellow block at the bottom.
+// Built per slide (not one shared overlay) so it also appears on every page
+// of a PDF export, each with its own number.
+function manageSidebar() {
+  var showNumber = !!Reveal.getConfig().slideNumber;
+  var label = _unairShortTitle();
+
+  Reveal.getSlides().forEach(function(slide, index) {
+    var bar = slide.querySelector(':scope > .unair-sidebar');
+    var excluded = slide.id === 'title-slide' ||
+      slide.hasAttribute('data-background-color') ||
+      UNAIR_SIDEBAR_EXCLUDED_CLASSES.some(function(c) { return slide.classList.contains(c); });
+
+    if (excluded) {
+      if (bar) bar.remove();
+      slide.classList.remove('has-unair-sidebar');
+      return;
+    }
+
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.className = 'unair-sidebar';
+      bar.setAttribute('aria-hidden', 'true');
+      bar.innerHTML = '<span class="unair-sidebar-mark"></span>' +
+        '<span class="unair-sidebar-label"></span>' +
+        '<span class="unair-sidebar-number"></span>';
+      slide.appendChild(bar);
+    }
+    bar.querySelector('.unair-sidebar-label').textContent = label;
+    // Matches Reveal's own "c" count: the cover slide is 1.
+    bar.querySelector('.unair-sidebar-number').textContent = showNumber ? String(index + 1) : '';
+    slide.classList.add('has-unair-sidebar');
+  });
+}
+
+// Pushes the sidebar out to the far right edge of the screen. Reveal scales
+// the slide to fit and letterboxes it, so the empty margin beside the slide
+// depends on the screen's aspect ratio; measure it (in unscaled slide px) and
+// hand it to the SCSS as custom properties. When the margin is narrower than
+// the bar, the overlap/clearance values tell slides how much room to make.
+var UNAIR_SIDEBAR_WIDTH = 72;  // $unair-sidebar-width in airlangga.scss
+var UNAIR_SIDEBAR_GAP = 32;    // $unair-sidebar-gap
+
+function layoutSidebar() {
+  var reveal = Reveal.getRevealElement();
+  var printing = (Reveal.isPrintView && Reveal.isPrintView()) ||
+    (Reveal.isPrintingPDF && Reveal.isPrintingPDF());
+  var offset = 0;
+
+  if (!printing) {
+    var scale = Reveal.getScale() || 1;
+    offset = Math.max(0, (reveal.getBoundingClientRect().width / scale - Reveal.getConfig().width) / 2);
+  }
+
+  var overlap = Math.max(0, UNAIR_SIDEBAR_WIDTH - offset);
+  var clearance = Math.max(0, UNAIR_SIDEBAR_WIDTH + UNAIR_SIDEBAR_GAP - offset);
+  reveal.style.setProperty('--unair-sidebar-offset', offset + 'px');
+  reveal.style.setProperty('--unair-sidebar-overlap', overlap + 'px');
+  reveal.style.setProperty('--unair-sidebar-clearance', clearance + 'px');
+}
+
 // Initialize on page load — resolve path first, then wire up Reveal events
 document.addEventListener('DOMContentLoaded', function() {
   _resolveUnairExtPath(function() {
     if (typeof Reveal !== 'undefined') {
       if (Reveal.isReady()) {
+        manageSidebar();
+        layoutSidebar();
         manageLogos();
       } else {
+        Reveal.on('ready', manageSidebar);
+        Reveal.on('ready', layoutSidebar);
         Reveal.on('ready', manageLogos);
       }
+      Reveal.on('resize', layoutSidebar);
+      // Re-run on every slide change, like the logos: both are idempotent, and
+      // this self-heals the rare load where the sidebar went missing.
+      Reveal.on('slidechanged', manageSidebar);
+      Reveal.on('slidechanged', layoutSidebar);
       Reveal.on('slidechanged', manageLogos);
     } else {
       setTimeout(manageLogos, 500);

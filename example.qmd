@@ -4,6 +4,7 @@ subtitle: "A Professional Quarto Presentation Template"
 author: "Rizqy Amelia Zein"
 institute: 
   - "Department of Psychology, Universitas Airlangga"
+short-title: "UNAIR Quarto Theme"
 date: today
 format:
   unair-revealjs:
@@ -164,16 +165,10 @@ Opt-in, full-slide layouts for richer presentations
 4. Conclusions
 5. Q&A
 
-## Field Study Results {.section-slide}
+# Field Study Results {background-color="#14497F"}
 
 ::: {.section-number}
 01
-:::
-
-## Participant Recruitment {.section-slide-dark data-background-image="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop"}
-
-::: {.section-number}
-02
 :::
 
 ## Key Findings {.text-image}
@@ -278,7 +273,7 @@ William Bruce Cameron, *Informal Sociology* (1963)
 :::
 :::
 
-## Quote {.quote-slide-dark data-background-image="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=1200&auto=format&fit=crop"}
+## Quote {.quote-slide-dark data-background-image="https://images.unsplash.com/photo-1648195699350-fa0ed4a263e7?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
 
 ::: {.quote-bubble}
 > The more any quantitative social indicator is used for social decision-making, the more subject it will be to corruption pressures, and the more apt it will be to distort the very processes it is intended to monitor.
@@ -288,13 +283,13 @@ Donald T. Campbell, on "Campbell's Law" (1976)
 :::
 :::
 
-## Thank you!😊
+## Thank you!😊 {.closing-slide}
 
-**Questions?**
+::: {.closing-subtitle}
+Questions?
+:::
 
-::: {.callout-tip}
-### Contact me
-
+::: {.closing-contact}
 - [ ]{.fa-solid .fa-envelope .fa-fw} [amelia.zein@psikologi.unair.ac.id](mailto:amelia.zein@psikologi.unair.ac.id)
 - [ ]{.fa-solid .fa-globe .fa-fw} [https://rameliaz.github.io/](https://rameliaz.github.io/)
 - [ ]{.fa-brands .fa-discord .fa-fw} [@rameliaz](https://discord.com/users/807046335613632555)
@@ -302,7 +297,6 @@ Donald T. Campbell, on "Campbell's Law" (1976)
 - [ ]{.fa-brands .fa-github .fa-fw} [@rameliaz](https://github.com/rameliaz)
 :::
 
-::: {.callout-note}
-### Want to use the template for your presentation?
-Download this template at [github.com/rameliaz/quarto-unair-theme](https://github.com/rameliaz/quarto-unair-theme/tree/main)
+::: {.closing-note}
+Want to use this template? Download it at [github.com/rameliaz/quarto-unair-theme](https://github.com/rameliaz/quarto-unair-theme/tree/main)
 :::

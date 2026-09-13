@@ -10,6 +10,7 @@ A reproducible Quarto Revealjs presentation theme following Universitas Airlangg
 - ✅ **Official UNAIR Branding** - Colors, typography, and logo placement per 2025 brand guidelines
 - ✅ **Professional Design** - Clean academic aesthetic for lectures and conferences
 - ✅ **Smart Logo Management** - Automatic logo placement with white variant for dark backgrounds
+- ✅ **Brand Sidebar** - Right-edge bar with the UNAIR key graphic, your talk's short title and the slide number, as in the guideline's page frame
 - ✅ **Pre-styled Components** - Section headers, callouts, tables, and code blocks
 - ✅ **11 Slide Layout Formats** - Agenda, section dividers, image bleeds, 3-columns, quotes, and more
 - ✅ **Easy Customization** - Simple to adapt while maintaining brand consistency
@@ -40,6 +41,62 @@ Then add `format: unair-revealjs` to your `.qmd` file's YAML header. See [`QUICK
 
 > ⚠️ **Manual step required:** `quarto add` only installs the `_extensions/` folder. The [`img/`](img/) folder (containing `logo.png` and `logo_white.png`) is **not** downloaded automatically, so you must manually download it from this repo and place it in your project root. Without it, the UNAIR logo will not render on your slides.
 
+## 🎨 Brand Sidebar
+
+Content slides get a bar on the right edge of the screen: the UNAIR key graphic at the top, your talk's short title running up the middle, and the slide number on a yellow block at the bottom. It's left off the title slide, section dividers, quote slides, the agenda and the closing slide.
+
+Set the short title in the YAML header:
+
+```yaml
+title: "Open Science Practices and Replication Rates in Psychological Research"
+short-title: "Open Science & Replication"
+```
+
+Without `short-title`, the full `title` is used and cut off with "…" if it doesn't fit. The number only appears when `slide-number: true` is set.
+
+To hide the sidebar on a single slide, add `.no-sidebar`:
+
+```markdown
+## Full-width chart {.no-sidebar}
+```
+
+## 👋 Closing Slide
+
+A cover-style final slide modeled on the UNAIR guideline's front page: blue page, white logo, big title, and the yellow batik strip on the right. All three blocks are optional.
+
+```markdown
+## Thank you! {.closing-slide}
+
+::: {.closing-subtitle}
+Questions?
+:::
+
+::: {.closing-contact}
+- [ ]{.fa-solid .fa-envelope .fa-fw} [name@unair.ac.id](mailto:name@unair.ac.id)
+:::
+
+::: {.closing-note}
+Slides at github.com/you/talk
+:::
+```
+
+## 📊 PowerPoint Version
+
+Not using Quarto? The same design is available as a PowerPoint template, with the brand sidebar, the batik-strip title and closing slides, and the layouts from the Quarto theme.
+
+- ⬇️ [**unair-template.potx**](https://github.com/rameliaz/quarto-unair-theme/raw/main/pptx/unair-template.potx): the template. Open it and PowerPoint starts a new, untitled presentation based on it.
+- ⬇️ [**unair-sample.pptx**](https://github.com/rameliaz/quarto-unair-theme/raw/main/pptx/unair-sample.pptx): a 15-slide sample deck that uses every layout, for reference.
+
+Add slides with **Home → New Slide** and pick a layout: Title, Section Divider, Content, Two Content, Title Only, Agenda, Text + Image, Image + Text, Text + Shaded Box, Three Columns, Overview Grid, Quote, Quote (Dark / Photo) or Closing. The running title in the sidebar is set on the slide master (**View → Slide Master**).
+
+The template uses Segoe UI, which comes with Windows. On a Mac, install [Inter](https://fonts.google.com/specimen/Inter), the guideline's alternative typeface, or PowerPoint will substitute another font.
+
+Both files are generated from [`pptx/src/`](pptx/src/). To rebuild them after changing the design, you need Node.js and Python with `python-pptx`:
+
+```bash
+cd pptx/src && npm install && npm run build
+```
+
 ## 🏗️ Project Structure
 
 ```
@@ -48,13 +105,20 @@ quarto-unair-theme/
 │   └── unair/
 │       ├── _extension.yml      # Extension registration
 │       ├── airlangga.scss      # Theme styles (SCSS)
-│       ├── theme.html          # Logo management JS + inline styles
+│       ├── theme.html          # Logo + sidebar management JS, inline styles
+│       ├── unair.lua           # Passes the `short-title` field to theme.html
+│       ├── keygraphic.svg      # UNAIR key graphic (source of the sidebar icon)
+│       ├── keypattern.svg      # Batik pattern tile (source of the closing-slide strip)
 │       ├── logo.png            # Regular logo
 │       └── logo_white.png      # White logo (dark backgrounds)
 ├── img/
 │   ├── logo.png                # Logo for local preview
 │   ├── logo_white.png          # White logo for local preview
 │   └── snapshot.gif            # Preview animation
+├── pptx/
+│   ├── unair-template.potx      # PowerPoint template
+│   ├── unair-sample.pptx        # Sample deck using every layout
+│   └── src/                     # Build scripts for both files
 ├── docs/                       # Rendered GitHub Pages output
 ├── example.qmd                 # Working demo presentation
 ├── _quarto.yml                 # Project configuration
@@ -66,4 +130,4 @@ quarto-unair-theme/
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) for details. The UNAIR logo and brand elements remain property of Universitas Airlangga. I prompted Claude Sonnet 5 to improve the theme.
+MIT License - see [LICENSE](LICENSE) for details. The UNAIR logo and brand elements remain property of Universitas Airlangga. I prompted Claude Sonnet 5 and Opus 5 to improve the theme.
