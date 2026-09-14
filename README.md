@@ -39,7 +39,15 @@ quarto add rameliaz/quarto-unair-theme
 
 Then add `format: unair-revealjs` to your `.qmd` file's YAML header. See [`QUICKSTART.md`](QUICKSTART.md) for a 5-minute setup walkthrough.
 
-> ⚠️ **Manual step required:** `quarto add` only installs the `_extensions/` folder. The [`img/`](img/) folder (containing `logo.png` and `logo_white.png`) is **not** downloaded automatically, so you must manually download it from this repo and place it in your project root. Without it, the UNAIR logo will not render on your slides.
+> 📄 **Hosting on GitHub Pages:** if you publish your rendered slides from a `docs/` folder, add an empty `.nojekyll` file to it. Without it, GitHub Pages runs the output through Jekyll, which ignores folders starting with `_` (like `_extensions/`) and breaks the theme's assets.
+>
+> To have Quarto copy it in on every render instead of doing it by hand, put the empty `.nojekyll` file in your project root and list it under `resources` in `_quarto.yml`:
+> ```yaml
+> project:
+>   output-dir: docs
+>   resources:
+>     - .nojekyll
+> ```
 
 ## 🎨 Brand Sidebar
 
