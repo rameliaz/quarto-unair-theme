@@ -26,7 +26,15 @@ cd your-project
 quarto add rameliaz/quarto-unair-theme
 ```
 
-> ⚠️ **Important:** `quarto add` only installs the `_extensions/` folder, and does **not** include the [`img/`](https://github.com/rameliaz/quarto-unair-theme/tree/main/img) folder. Manually download `img/` (containing `logo.png` and `logo_white.png`) from the GitHub repo and place it in your project root, or the UNAIR logo won't appear on your slides.
+> 📄 **Hosting on GitHub Pages:** if you publish your rendered slides from a `docs/` folder, add an empty `.nojekyll` file to it. Without it, GitHub Pages runs the output through Jekyll, which ignores folders starting with `_` (like `_extensions/`) and breaks the theme's assets.
+>
+> To have Quarto copy it in on every render instead of doing it by hand, put the empty `.nojekyll` file in your project root and list it under `resources` in `_quarto.yml`:
+> ```yaml
+> project:
+>   output-dir: docs
+>   resources:
+>     - .nojekyll
+> ```
 
 ## Step 3: Create Your Presentation
 
