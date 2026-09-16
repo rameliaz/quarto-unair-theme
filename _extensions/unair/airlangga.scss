@@ -122,20 +122,14 @@ $code-color: $unair-blue;
 }
 
 // Hide the slide number on section dividers, matching the other divider
-// formats, and on the cover slide.
+// formats, and on the cover slide. The cover also gets its own `.footer`
+// suppressed: it carries its own date in the same bottom-left corner
+// (`#title-slide p.date` below), and a configured `footer:` would collide
+// with it exactly like the closing slide's mirrored layout already avoids.
 .reveal:has(section[data-background-color].present) .slide-number,
-.reveal:has(section#title-slide.present) .slide-number {
+.reveal:has(section#title-slide.present) .slide-number,
+.reveal:has(section#title-slide.present) .footer {
   display: none !important;
-}
-
-// Section header slides
-.reveal .section-title-slide {
-  h1, h2 {
-    color: $unair-white;
-    background-color: $unair-blue;
-    padding: 0.5em 1em;
-    border-left: 8px solid $unair-yellow;
-  }
 }
 
 // Regular slides
@@ -413,9 +407,12 @@ $unair-grey-dark: #666666;
 
 // The agenda's own vertical rule already carries the "AGENDA" label, so
 // the corner logo isn't needed here; the item count varies per talk, so
-// a fixed slide number next to a self-numbered list reads as redundant.
+// a fixed slide number next to a self-numbered list reads as redundant. A
+// configured `footer:` would also sit right on top of the list's own
+// bottom-left rule/label (both anchored near left:3.5%-9%, bottom of slide).
 .reveal:has(section.agenda-slide.present) .slide-logo,
-.reveal:has(section.agenda-slide.present) .slide-number {
+.reveal:has(section.agenda-slide.present) .slide-number,
+.reveal:has(section.agenda-slide.present) .footer {
   display: none !important;
 }
 

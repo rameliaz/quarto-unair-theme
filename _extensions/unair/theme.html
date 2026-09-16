@@ -53,6 +53,9 @@ function manageLogos() {
         titleLogo.src = _unairExtPath + 'logo.png';
         titleLogo.className = 'title-slide-logo';
         titleLogo.alt = 'Universitas Airlangga Logo';
+        // The logo has no intrinsic size until it loads, so a pre-load
+        // fitCoverFonts() call would see a 0x0 box and under-shrink the title.
+        titleLogo.onload = fitCoverFonts;
         slide.insertBefore(titleLogo, slide.firstChild);
       }
       return;
@@ -75,16 +78,133 @@ function manageLogos() {
     // If exactly one logo exists, just update its source
     if (existingLogos.length === 1) {
       existingLogos[0].src = logoSrc;
-    } 
+    }
     // If no logo exists, create one
     else if (existingLogos.length === 0) {
       const logo = document.createElement('img');
       logo.src = logoSrc;
       logo.className = 'slide-logo';
       logo.alt = 'Universitas Airlangga Logo';
+      // Same reasoning as titleLogo.onload above: the closing slide's heading
+      // needs the logo's real size to shrink against, not a pre-load 0x0 box.
+      if (slide.classList.contains('closing-slide')) logo.onload = fitCoverFonts;
       slide.appendChild(logo);
     }
   });
+}
+
+// Shrinks a cover heading's font size just enough that long text wraps
+// without its top line reaching into the corner logo. Re-measures from the
+// CSS max size each time rather than only ever shrinking further, so it
+// recovers if the heading shortens (e.g. a resize changes how much wraps).
+// Covers both slides that pair a big heading with a fixed-position logo in
+// the same corner: the title slide (h1.title / .title-slide-logo) and the
+// closing slide (its h2 / .slide-logo), which mirror each other's layout.
+var UNAIR_COVER_FONT_MAX = 2.6;  // em, matches h1.title/.closing-slide h2 in airlangga.scss
+var UNAIR_COVER_FONT_MIN = 1.3;  // em, floor so text stays readable
+var UNAIR_COVER_FONT_STEP = 0.1; // em
+var UNAIR_COVER_LOGO_GAP = 14;   // px clearance kept below the logo
+
+function _unairFitCoverHeading(headingEl, logoEl) {
+  if (!headingEl || !logoEl) return;
+
+  var size = UNAIR_COVER_FONT_MAX;
+  headingEl.style.fontSize = size + 'em';
+
+  var headingRect = headingEl.getBoundingClientRect();
+  var logoRect = logoEl.getBoundingClientRect();
+
+  // Full rectangle-intersection test (all four half-plane checks), not just
+  // the two that happen to matter today — the heading is a block element
+  // that always spans the full container width, so the horizontal checks
+  // are currently trivial, but that's a property of the CSS, not of this
+  // function, and shouldn't be assumed here.
+  while (size > UNAIR_COVER_FONT_MIN &&
+    headingRect.left < logoRect.right &&
+    headingRect.right > logoRect.left &&
+    headingRect.bottom > logoRect.top &&
+    headingRect.top < logoRect.bottom + UNAIR_COVER_LOGO_GAP) {
+    size -= UNAIR_COVER_FONT_STEP;
+    headingEl.style.fontSize = size.toFixed(2) + 'em';
+    headingRect = headingEl.getBoundingClientRect();
+  }
+}
+
+function fitCoverFonts() {
+  var titleSlide = document.getElementById('title-slide');
+  if (titleSlide) {
+    _unairFitCoverHeading(titleSlide.querySelector('h1.title'), titleSlide.querySelector('.title-slide-logo'));
+  }
+
+  var closingSlide = document.querySelector('.reveal .slides section.closing-slide');
+  if (closingSlide) {
+    _unairFitCoverHeading(closingSlide.querySelector(':scope > h2'), closingSlide.querySelector('.slide-logo'));
+  }
+}
+
+// Shrinks `el`'s own font-size (off a cached natural baseline, so repeated
+// calls don't compound and later-shorter content can grow back) until its
+// rendered content no longer overflows `containerEl`'s laid-out height.
+// Deliberately uses clientHeight/scrollHeight rather than
+// getBoundingClientRect: those are layout metrics, unaffected by the CSS
+// transform Reveal uses to scale the whole deck to fit the viewport, so the
+// same authored-pixel comparison holds at any zoom level (see layoutSidebar
+// above for the same distinction). Only meaningful while the element is
+// actually laid out (not `display:none`) — i.e. while its slide is current.
+function _unairShrinkToFit(el, containerEl, opts) {
+  if (!el || !containerEl) return;
+  opts = opts || {};
+  var min = opts.min || 0.5;    // floor, as a fraction of the natural size
+  var step = opts.step || 0.04; // fraction per iteration
+  var margin = opts.margin || 1; // shrink target = containerEl height * margin
+
+  if (el.dataset.unairBaseFontPx === undefined) {
+    var priorSize = el.style.fontSize;
+    el.style.fontSize = '';
+    el.dataset.unairBaseFontPx = parseFloat(getComputedStyle(el).fontSize);
+    el.style.fontSize = priorSize;
+  }
+  var basePx = parseFloat(el.dataset.unairBaseFontPx);
+  if (!basePx) return;
+
+  var factor = 1;
+  el.style.fontSize = (basePx * factor) + 'px';
+  var targetHeight = containerEl.clientHeight * margin;
+  while (factor > min && el.scrollHeight > targetHeight) {
+    factor -= step;
+    el.style.fontSize = (basePx * factor) + 'px';
+  }
+}
+
+// Quote slides (`.quote-slide`/`.quote-slide-dark`) centre `.quote-bubble`
+// in a fixed-height, `overflow: hidden` section (airlangga.scss) — a long
+// quote used to just get silently clipped top/bottom with no visual cue.
+// Agenda slides (`.agenda-slide`) size their `ol` via CSS item-count
+// breakpoints (`:has(li:nth-child(n))`), which handle item *count* but not
+// long items that wrap to extra lines; this adds a dynamic pass on top of
+// whatever size the CSS breakpoints land on.
+// Only the current slide's content is laid out (non-`display:none`) at any
+// given time, so — unlike fitCoverFonts, which targets the title/closing
+// slides unconditionally by id/class — these run against whichever slide
+// `slidechanged` just made current.
+function fitOverflowContent() {
+  var current = Reveal.getCurrentSlide && Reveal.getCurrentSlide();
+  if (!current) return;
+
+  if (current.classList.contains('quote-slide') || current.classList.contains('quote-slide-dark')) {
+    var bubble = current.querySelector(':scope > .quote-bubble');
+    // 0.92: a little breathing room so the shrink target is reached just
+    // before the text would actually touch the slide's top/bottom edge.
+    _unairShrinkToFit(bubble, current, { min: 0.5, step: 0.04, margin: 0.92 });
+  }
+
+  if (current.classList.contains('agenda-slide')) {
+    var ol = current.querySelector(':scope > ol');
+    // The `ol` is its own fixed-height box (absolutely positioned via
+    // top/bottom in the SCSS), so it's both the shrinking element and the
+    // container its own content must fit inside.
+    _unairShrinkToFit(ol, ol, { min: 0.4, step: 0.04 });
+  }
 }
 
 // Sidebar label: the talk's short title. Prefers the `short-title` YAML
@@ -174,17 +294,25 @@ document.addEventListener('DOMContentLoaded', function() {
         manageSidebar();
         layoutSidebar();
         manageLogos();
+        fitCoverFonts();
+        fitOverflowContent();
       } else {
         Reveal.on('ready', manageSidebar);
         Reveal.on('ready', layoutSidebar);
         Reveal.on('ready', manageLogos);
+        Reveal.on('ready', fitCoverFonts);
+        Reveal.on('ready', fitOverflowContent);
       }
       Reveal.on('resize', layoutSidebar);
+      Reveal.on('resize', fitCoverFonts);
+      Reveal.on('resize', fitOverflowContent);
       // Re-run on every slide change, like the logos: both are idempotent, and
       // this self-heals the rare load where the sidebar went missing.
       Reveal.on('slidechanged', manageSidebar);
       Reveal.on('slidechanged', layoutSidebar);
       Reveal.on('slidechanged', manageLogos);
+      Reveal.on('slidechanged', fitCoverFonts);
+      Reveal.on('slidechanged', fitOverflowContent);
     } else {
       setTimeout(manageLogos, 500);
     }
