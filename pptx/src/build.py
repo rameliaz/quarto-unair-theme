@@ -13,6 +13,9 @@ from pptx.opc.constants import CONTENT_TYPE as CT, RELATIONSHIP_TYPE as RT
 from pptx.oxml import parse_xml
 from pptx.oxml.ns import qn
 from pptx.parts.slide import SlideLayoutPart
+from pptx.dml.color import RGBColor
+from pptx.enum.shapes import PP_PLACEHOLDER
+from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.util import Inches, Pt
 
 HERE = Path(__file__).parent
@@ -59,11 +62,15 @@ def rpr(tag="a:rPr", sz=None, b=None, i=None, color=None, font=None, cap=None, s
     return f'<{tag} {" ".join(at)}>{inner}</{tag}>'
 
 
-def ppr(tag="a:pPr", algn=None, lnspc=None, bullets=False, inner=""):
-    at = [] if bullets else ['marL="0"', 'indent="0"']
+def ppr(tag="a:pPr", algn=None, lnspc=None, bullets=False, inner="", marL=None, indent=None,
+        spc_aft=None, bullet_xml=None):
+    at = [] if (bullets or bullet_xml) else ['marL="0"', 'indent="0"']
+    if marL is not None: at.append(f'marL="{E(marL)}"')
+    if indent is not None: at.append(f'indent="{-E(indent)}"')
     if algn: at.append(f'algn="{algn}"')
     kids = f'<a:lnSpc><a:spcPct val="{int(lnspc * 1000)}"/></a:lnSpc>' if lnspc else ""
-    if not bullets: kids += "<a:buNone/>"
+    if spc_aft is not None: kids += f'<a:spcAft><a:spcPts val="{int(spc_aft * 100)}"/></a:spcAft>'
+    kids += bullet_xml or ("" if bullets else "<a:buNone/>")
     return f'<{tag} {" ".join(at)}>{kids}{inner}</{tag}>'
 
 
@@ -124,17 +131,22 @@ class Tree:
             f'<p:spPr>{xfrm(x, y, w, h)}<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>')
 
     def ph(self, name, kind, idx, x, y, w, h, prompt, anchor="t", autofit=False, rot=None,
-           algn=None, lnspc=None, bullets=False, **run):
+           algn=None, lnspc=None, bullets=False, marL=None, indent=None, spc_aft=None,
+           bullet_xml=None, wrap=True, **run):
         """kind: 'title', 'ctrTitle', 'subTitle', 'body', 'pic', or None (content object)."""
         t = f' type="{kind}"' if kind else ""
         i = f' idx="{idx}"' if idx is not None else ""
-        lvl1 = ppr("a:lvl1pPr", algn, lnspc, bullets, rpr("a:defRPr", **run))
+        lvl1 = ppr("a:lvl1pPr", algn, lnspc, bullets, rpr("a:defRPr", **run),
+                   marL, indent, spc_aft, bullet_xml)
+        custom = ' hasCustomPrompt="1"' if prompt else ""
+        body = (f'<a:p><a:r><a:rPr lang="en-US"/><a:t>{prompt}</a:t></a:r></a:p>' if prompt
+                else '<a:p><a:endParaRPr lang="en-US"/></a:p>')
         self.parts.append(
             f'<p:sp><p:nvSpPr><p:cNvPr id="{self._id()}" name="{name}"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>'
-            f'<p:nvPr><p:ph{t}{i} hasCustomPrompt="1"/></p:nvPr></p:nvSpPr>'
+            f'<p:nvPr><p:ph{t}{i}{custom}/></p:nvPr></p:nvSpPr>'
             f'<p:spPr>{xfrm(x, y, w, h, rot)}<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr>'
-            f'<p:txBody>{body_pr(anchor, autofit=autofit)}<a:lstStyle>{lvl1}</a:lstStyle>'
-            f'<a:p><a:r><a:rPr lang="en-US"/><a:t>{prompt}</a:t></a:r></a:p></p:txBody></p:sp>')
+            f'<p:txBody>{body_pr(anchor, autofit=autofit, wrap=wrap)}<a:lstStyle>{lvl1}</a:lstStyle>'
+            f'{body}</p:txBody></p:sp>')
 
 
 def para(text, algn=None, **run):
@@ -151,6 +163,14 @@ CLR_SCHEME = f"""<a:clrScheme name="Universitas Airlangga">
 <a:accent5><a:srgbClr val="{GREY_DARK}"/></a:accent5><a:accent6><a:srgbClr val="0B2E52"/></a:accent6>
 <a:hlink><a:srgbClr val="{BLUE}"/></a:hlink><a:folHlink><a:srgbClr val="0B2E52"/></a:folHlink>
 </a:clrScheme>"""
+
+
+def default_table_style(prs, style_id):
+    """What a table inserted from a layout's table slot looks like."""
+    for part in prs.part.package.iter_parts():
+        if str(part.partname) == "/ppt/tableStyles.xml":
+            xml = part.blob.decode("utf-8")
+            part._blob = re.sub(r'def="\{[^"]*\}"', f'def="{style_id}"', xml).encode("utf-8")
 
 
 def fix_theme(prs):
@@ -184,11 +204,20 @@ def add_title_rule_logo(t, logo_rid):
     """Standard content-slide header: title, yellow rule, logo top-right."""
     lw = 2.0
     t.pic("Logo", logo_rid, CR - lw + 0.1, 0.28, lw, lw / LOGO_RATIO, descr="Universitas Airlangga logo")
-    t.ph("Title", "title", None, ML, 0.3, 9.3, 0.92, "Click to edit title", anchor="b")
+    t.ph("Title", "title", None, ML, 0.3, 9.3, 0.92, "Click to edit title", anchor="b", autofit=True)
     t.line("Title rule", ML, 1.3, CW, 0, YELLOW, 2.25)
 
 
-def build_master(prs, running_title):
+def sidebar_footer(t):
+    """Running title in the sidebar, as a real footer placeholder so one pass of
+    Insert -> Header & Footer -> Apply to All sets it on every slide."""
+    length, bottom = 4.6, H - 0.9 - 0.4
+    cx, cy = SB_X + SB_W / 2, bottom - length / 2
+    t.ph("Footer Placeholder", "ftr", 11, cx - length / 2, cy - 0.15, length, 0.3, "",
+         anchor="ctr", rot=16200000, algn="ctr", sz=8.5, b=True, color=WHITE, cap="all", spc=1.9)
+
+
+def build_master(prs):
     m = prs.slide_master
     el = m.part._element
     img = lambda p: m.part.get_or_add_image_part(str(p))[1]
@@ -199,10 +228,7 @@ def build_master(prs, running_title):
     # Brand sidebar (right edge): key graphic, running title, slide number block.
     t.rect("Sidebar", SB_X, 0, SB_W, H, BLUE)
     t.pic("Sidebar key graphic", img(A / "keygraphic_white.png"), SB_X + (SB_W - 0.3) / 2, 0.45, 0.3, 0.3)
-    label_len, label_bottom = 4.6, H - 0.9 - 0.4
-    cx, cy = SB_X + SB_W / 2, label_bottom - label_len / 2
-    t.text("Sidebar running title", cx - label_len / 2, cy - 0.15, label_len, 0.3,
-           para(running_title, sz=8.5, b=True, color=WHITE, cap="all", spc=1.9), anchor="ctr", rot=16200000)
+    sidebar_footer(t)
     t.rect("Sidebar number block", SB_X, H - 0.9, SB_W, 0.9, YELLOW)
     t.parts.append(
         f'<p:sp><p:nvSpPr><p:cNvPr id="{t._id()}" name="Sidebar slide number"/><p:cNvSpPr txBox="1"/><p:nvPr userDrawn="1"/></p:nvSpPr>'
@@ -225,6 +251,8 @@ def build_master(prs, running_title):
         styles.replace(styles.find(qn(tag)), parse_xml(xml))
     for hf in el.findall(qn("p:hf")):
         el.remove(hf)
+    el.insert(el.index(el.find(qn("p:txStyles"))),
+              parse_xml(f'<p:hf {NS} sldNum="0" hdr="0" dt="0"/>'))
 
 
 # ── Layouts ────────────────────────────────────────────────────────────
@@ -245,11 +273,14 @@ def add_layout(prs, name, build, sidebar=True, bg=None):
 
     t = Tree()
     build(t, lambda p: part.get_or_add_image_part(str(p))[1])
+    if sidebar:
+        sidebar_footer(t)
     bg_xml = f'<p:bg><p:bgPr>{solid(bg)}<a:effectLst/></p:bgPr></p:bg>' if bg else ""
     show = "" if sidebar else ' showMasterSp="0"'
+    hf = "" if sidebar else f'<p:hf ftr="0" sldNum="0" hdr="0" dt="0"/>'
     part._element = parse_xml(
         f'<p:sldLayout {NS} preserve="1" userDrawn="1"{show}><p:cSld name="{name}">{bg_xml}{t.xml()}</p:cSld>'
-        f'<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>')
+        f'<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>{hf}</p:sldLayout>')
 
 
 def L_title(t, img):
@@ -257,19 +288,20 @@ def L_title(t, img):
     t.pic("Logo", img(A / "logo.png"), COVER_X - 0.14, 0.55, lw, lw / LOGO_RATIO, descr="Universitas Airlangga logo")
     t.pic("Batik strip", img(A / "strip_blue.png"), STRIP_X, 0, STRIP_W, H)
     w = STRIP_X - COVER_X - 0.8
-    t.ph("Title", "ctrTitle", None, COVER_X, 2.3, w, 2.25, "Presentation title", anchor="b", sz=44, lnspc=95)
-    t.ph("Subtitle", "subTitle", 1, COVER_X, 4.62, w, 0.65, "Subtitle", sz=22, color=BLUE, b=False)
-    t.ph("Author", "body", 13, COVER_X, 5.42, w, 0.36, "Author name", sz=13, b=True, color=BLUE)
-    t.ph("Affiliation", "body", 14, COVER_X, 5.76, w, 0.36, "Department, Universitas Airlangga", sz=13, color=BLUE)
+    t.ph("Title", "ctrTitle", None, COVER_X, 2.3, w, 2.25, "Presentation title", anchor="b", autofit=True, sz=44, lnspc=95)
+    t.ph("Subtitle", "subTitle", 1, COVER_X, 4.62, w, 0.65, "Subtitle", autofit=True, sz=22, color=BLUE, b=False)
+    t.ph("Author", "body", 13, COVER_X, 5.42, w, 0.36, "Author name", autofit=True, sz=13, b=True, color=BLUE)
+    t.ph("Affiliation", "body", 14, COVER_X, 5.76, w, 0.36, "Department, Universitas Airlangga", autofit=True, sz=13, color=BLUE)
     t.ph("Date", "body", 15, COVER_X, 6.62, 5, 0.3, "Date", sz=10.5, color=BLUE)
 
 
 def L_section(t, img):
     lw = 1.95
     t.pic("Logo (white)", img(A / "logo_white.png"), 0.95 - 0.1, 2.15, lw, lw / LOGO_RATIO, descr="Universitas Airlangga logo")
-    t.ph("Number", "body", 16, 7.8, 3.9, 5.0, 3.3, "01", anchor="b", algn="r", sz=180, b=True, color="356291", lnspc=80)
+    t.ph("Number", "body", 16, 7.8, 3.9, 5.0, 3.3, "01", anchor="b", algn="r", autofit=True,
+         sz=180, b=True, color="356291", lnspc=80)
     t.ph("Title", "title", None, 0.95, 3.02, 10.2, 0.85, "Section title", autofit=True, sz=40, color=WHITE)
-    t.ph("Subtitle", "body", 1, 0.95, 3.95, 9.5, 0.9, "Optional section description", sz=20, color=WHITE)
+    t.ph("Subtitle", "body", 1, 0.95, 3.95, 9.5, 0.9, "Optional section description", autofit=True, sz=20, color=WHITE)
 
 
 def L_content(t, img):
@@ -292,65 +324,59 @@ def L_agenda(t, img):
     t.line("Agenda rule", W * 0.09, 0.75, 0, 6.0, YELLOW, 2.25)
     t.ph("Title", "title", None, W * 0.045 - 1.6, H / 2 - 0.2, 3.2, 0.4, "Agenda", anchor="ctr", algn="ctr",
          rot=16200000, sz=14, cap="all", spc=4.5)
-    x0, x1, y0, rh = W * 0.14, W * 0.92, 0.9, 1.14
-    for i in range(5):
-        y = y0 + i * rh
-        t.text(f"Number {i + 1}", x0, y, 1.3, rh, para(f"{i + 1:02d}", sz=40, b=True, color=BLUE), anchor="ctr")
-        t.ph(f"Item {i + 1}", "body", 20 + i, x0 + 1.35, y, x1 - x0 - 1.8, rh, f"Agenda item {i + 1}",
-             anchor="ctr", sz=20, font=FONT_SEMI, color=TEXT)
-        t.rect(f"Dot {i + 1}", x1 - 0.09, y + rh / 2 - 0.045, 0.09, 0.09, YELLOW, geom="ellipse")
-        if i < 4:
-            t.line(f"Separator {i + 1}", x0, y + rh, x1 - x0, 0, "E8E8E8", 0.75)
+    x0, x1 = W * 0.14, W * 0.92
+    numbers = (f'<a:buClr><a:srgbClr val="{BLUE}"/></a:buClr><a:buSzPct val="205000"/>'
+               f'<a:buFont typeface="{FONT}"/><a:buAutoNum type="arabicPlain"/>')
+    t.ph("Items", "body", 1, x0, 0.9, x1 - x0, 5.7, "Click to add agenda items",
+         anchor="ctr", autofit=True, lnspc=145, spc_aft=16, marL=1.05, indent=1.05,
+         bullet_xml=numbers, sz=20, b=True, font=FONT, color=TEXT)
 
 
 def L_text_image(t, img):
     x_img = SB_X * 0.55
     t.ph("Picture", "pic", 10, x_img, 0, SB_X - x_img, H, "Insert picture", anchor="ctr", algn="ctr", sz=14, color=GREY_DARK)
-    t.ph("Title", "title", None, ML, 0.5, x_img - ML - 0.5, 1.05, "Click to edit title", anchor="b")
+    t.ph("Title", "title", None, ML, 0.5, x_img - ML - 0.5, 1.05, "Click to edit title", anchor="b", autofit=True)
     t.ph("Text", "body", 1, ML, 1.85, x_img - ML - 0.5, 5.0, "Click to add text", bullets=True, autofit=True, sz=17)
 
 
 def L_image_text(t, img):
     x_txt = 6.85
     t.ph("Picture", "pic", 10, 0, 0, 6.3, H, "Insert picture", anchor="ctr", algn="ctr", sz=14, color=GREY_DARK)
-    t.ph("Title", "title", None, x_txt, 0.9, CR - x_txt, 1.0, "Click to edit title", anchor="b", sz=26)
+    t.ph("Title", "title", None, x_txt, 0.9, CR - x_txt, 1.0, "Click to edit title", anchor="b", autofit=True, sz=26)
     t.ph("Text", "body", 1, x_txt, 2.05, CR - x_txt, 4.7, "Click to add text", autofit=True, sz=17, lnspc=125)
 
 
 def L_text_box(t, img):
     add_title_rule_logo(t, img(A / "logo.png"))
-    t.ph("Lead", "body", 10, ML, 1.62, CW, 1.1, "Introductory sentence", sz=22, font=FONT_LIGHT, lnspc=115)
+    t.ph("Lead", "body", 15, ML, 1.62, CW, 1.1, "Introductory sentence", autofit=True, sz=22, font=FONT_LIGHT, lnspc=115)
     t.rect("Box accent", ML, 2.95, CW, 3.85, YELLOW, geom="roundRect", adj=2500)
     t.rect("Box", ML + 0.08, 2.95, CW - 0.08, 3.85, GREY_LIGHT, geom="roundRect", adj=2500)
-    t.ph("Box text", "body", 11, ML + 0.55, 3.35, CW - 1.1, 3.05, "Supporting detail", autofit=True, sz=17, lnspc=130)
+    t.ph("Box text", "body", 16, ML + 0.55, 3.35, CW - 1.1, 3.05, "Supporting detail", autofit=True, sz=17, lnspc=130)
 
 
 def L_three(t, img):
     add_title_rule_logo(t, img(A / "logo.png"))
-    t.ph("Lead", "body", 10, ML, 1.6, 8.2, 0.7, "Short introduction", sz=18, font=FONT_LIGHT)
+    t.ph("Lead", "body", 10, ML, 1.6, 8.2, 0.7, "Short introduction", autofit=True, sz=18, font=FONT_LIGHT)
     py, ph_ = 2.5, 4.4
-    t.rect("Panel", ML, py, CW, ph_, GREY_LIGHT, geom="roundRect", adj=2500)
-    pad, gap = 0.45, 0.45
-    cw = (CW - 2 * pad - 2 * gap) / 3
-    for i in range(3):
-        x = ML + pad + i * (cw + gap)
-        t.ph(f"Icon {i + 1}", "pic", 30 + i, x + (cw - 0.8) / 2, py + 0.45, 0.8, 0.8, "Icon", anchor="ctr", algn="ctr", sz=9, color=GREY_DARK)
-        t.ph(f"Heading {i + 1}", "body", 40 + i, x, py + 1.4, cw, 0.5, "Heading", anchor="ctr", algn="ctr", sz=17, b=True, color=BLUE)
-        t.ph(f"Text {i + 1}", "body", 50 + i, x, py + 1.95, cw, 2.1, "Short description", algn="ctr", autofit=True, sz=14, lnspc=120)
+    t.ph("Columns", "tbl", 20, ML, py, CW, ph_, "", anchor="ctr", algn="ctr", sz=12, color=GREY_DARK)
 
 
 def L_overview(t, img):
     t.rect("Header band", 0, 0, SB_X, 1.15, BLUE)
-    t.ph("Title", "title", None, ML, 0, SB_X - 2 * ML, 1.15, "Click to edit title", anchor="ctr", algn="ctr", sz=26, color=WHITE)
+    t.ph("Title", "title", None, ML, 0, SB_X - 2 * ML, 1.15, "Click to edit title", anchor="ctr", algn="ctr", autofit=True, sz=26, color=WHITE)
     gx, gap = ML, 0.4
     iw = (SB_X - 2 * ML - 2 * gap) / 3
     for i in range(3):
         x = gx + i * (iw + gap)
-        t.ph(f"Picture {i + 1}", "pic", 10 + i, x, 1.95, iw, 2.75, "Insert picture", anchor="ctr", algn="ctr", sz=12, color=GREY_DARK)
-        t.ph(f"Caption {i + 1}", "body", 20 + i, x, 4.9, iw, 0.9, "Caption", algn="ctr", sz=14)
+        t.ph(f"Picture {i + 1}", "pic", 15 + i, x, 1.95, iw, 2.75, "Insert picture", anchor="ctr", algn="ctr", sz=12, color=GREY_DARK)
+        t.ph(f"Caption {i + 1}", "body", 20 + i, x, 4.9, iw, 0.9, "Caption", algn="ctr", autofit=True, sz=14)
 
 
 def _quote(t, dark):
+    # Off-slide so the design is unchanged, but Outline view and the
+    # Accessibility Checker see a slide title.
+    t.ph("Title", "title", None, -4.4, 0.4, 3.8, 0.8, "Slide title (not shown on the slide)",
+         autofit=True, sz=24, color=BLUE)
     bx = W * 0.18
     if dark:
         t.text("Quote mark", bx - 0.12, 0.95, 1.5, 1.6, para("“", sz=72, color="7D93AC", font=FONT), anchor="t")
@@ -359,7 +385,7 @@ def _quote(t, dark):
     t.rect("Quote rule", bx, 2.05, 0.07, 3.4, YELLOW)
     t.ph("Quote", "body", 10, bx + 0.55, 2.05, W * 0.64 - 0.55, 2.65, "Quoted text", anchor="ctr", autofit=True,
          sz=26, i=True, lnspc=130, color=WHITE if dark else BLUE, font=FONT_LIGHT if dark else None)
-    t.ph("Author", "body", 11, bx + 0.55, 4.85, W * 0.64 - 0.55, 0.6, "— Name, source (year)", anchor="b",
+    t.ph("Author", "body", 11, bx + 0.55, 4.85, W * 0.64 - 0.55, 0.6, "— Name, source (year)", anchor="b", autofit=True,
          sz=12, b=True, cap="all", spc=1.0, color="D9E2EC" if dark else GREY_DARK)
 
 
@@ -377,9 +403,9 @@ def L_closing(t, img):
     t.pic("Logo (white)", img(A / "logo_white.png"), COVER_X - 0.14, 0.55, lw, lw / LOGO_RATIO, descr="Universitas Airlangga logo")
     t.pic("Batik strip", img(A / "strip_yellow.png"), STRIP_X, 0, STRIP_W, H)
     w = STRIP_X - COVER_X - 0.8
-    t.ph("Title", "title", None, COVER_X, 1.95, w, 1.7, "Thank you!", anchor="b", sz=44, color=WHITE)
-    t.ph("Subtitle", "body", 1, COVER_X, 3.72, w, 0.62, "Questions?", sz=22, color=WHITE)
-    t.ph("Contact", "body", 12, COVER_X, 4.55, w, 1.7, "Contact details", sz=13, color=WHITE, lnspc=130)
+    t.ph("Title", "title", None, COVER_X, 1.95, w, 1.7, "Thank you!", anchor="b", autofit=True, sz=44, color=WHITE)
+    t.ph("Subtitle", "body", 1, COVER_X, 3.72, w, 0.62, "Questions?", autofit=True, sz=22, color=WHITE)
+    t.ph("Contact", "body", 12, COVER_X, 4.55, w, 1.7, "Contact details", autofit=True, sz=13, color=WHITE, lnspc=130)
     t.ph("Note", "body", 13, COVER_X, 6.62, w, 0.3, "Small print, e.g. a URL", sz=10.5, color=WHITE)
 
 
@@ -389,6 +415,7 @@ LAYOUTS = [
     ("Content", L_content, True, None),
     ("Two Content", L_two, True, None),
     ("Title Only", L_title_only, True, None),
+    ("Content (no sidebar)", L_content, False, WHITE),
     ("Agenda", L_agenda, False, WHITE),
     ("Text + Image", L_text_image, True, None),
     ("Image + Text", L_image_text, True, None),
@@ -401,14 +428,15 @@ LAYOUTS = [
 ]
 
 
-def new_presentation(running_title):
+def new_presentation():
     prs = Presentation()
     prs.slide_width, prs.slide_height = Inches(W), Inches(H)
     m = prs.slide_master
     for layout in list(m.slide_layouts):
         m.slide_layouts.remove(layout)
     fix_theme(prs)
-    build_master(prs, running_title)
+    default_table_style(prs, NO_GRID_STYLE)
+    build_master(prs)
     for name, fn, sidebar, bg in LAYOUTS:
         add_layout(prs, name, fn, sidebar, bg)
     cp = prs.core_properties
@@ -443,8 +471,20 @@ def fill(ph, items):
                 pPr.insert(0, parse_xml(f'<a:buNone {NS}/>'))
 
 
+FOOTER_TEXT = "UNAIR PowerPoint Template"
+
+
 def slide(prs, name, **by_idx):
-    s = prs.slides.add_slide(layout(prs, name))
+    lay = layout(prs, name)
+    s = prs.slides.add_slide(lay)
+    if any(p.placeholder_format.type == PP_PLACEHOLDER.FOOTER for p in lay.placeholders):
+        tree = s.shapes._spTree
+        sid = max(int(e.get("id")) for e in tree.iter(qn("p:cNvPr"))) + 1
+        tree.append(parse_xml(
+            f'<p:sp {NS}><p:nvSpPr><p:cNvPr id="{sid}" name="Footer Placeholder"/>'
+            f'<p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="ftr" idx="11"/></p:nvPr></p:nvSpPr>'
+            f'<p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US"/>'
+            f'<a:t>{FOOTER_TEXT}</a:t></a:r></a:p></p:txBody></p:sp>'))
     phs = {p.placeholder_format.idx: p for p in s.placeholders}
     for key, val in by_idx.items():
         idx = 0 if key == "title" else int(key[1:])
@@ -456,11 +496,43 @@ def slide(prs, name, **by_idx):
     return s
 
 
+NO_GRID_STYLE = "{2D5ABB26-0587-4C30-8999-92F81FD0307C}"   # built-in "No Style, No Grid"
+BRAND_TABLE_STYLE = "{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}"   # "Medium Style 2 - Accent 1"
+
+
+def columns_table(s, columns):
+    """Icon / heading / description as a borderless table, one column each."""
+    ph = next(p for p in s.placeholders if p.placeholder_format.idx == 20)
+    left, top, width, height = ph.left, ph.top, ph.width, ph.height
+    ph._element.getparent().remove(ph._element)
+
+    tbl = s.shapes.add_table(3, len(columns), left, top, width, height).table
+    tbl.first_row = tbl.horz_banding = False
+    tbl._tbl.tblPr.find(qn("a:tableStyleId")).text = NO_GRID_STYLE
+    for row, share in zip(tbl.rows, (0.30, 0.20, 0.50)):
+        row.height = int(height * share)
+    for c, col in enumerate(columns):
+        for r, (text, size, bold, color, font) in enumerate(zip(
+                col, (32, 17, 14), (False, True, False), (TEXT, BLUE, TEXT), ("Segoe UI Emoji", FONT, FONT))):
+            cell = tbl.cell(r, c)
+            cell.fill.solid()
+            cell.fill.fore_color.rgb = RGBColor.from_string(GREY_LIGHT)
+            cell.margin_left = cell.margin_right = Inches(0.25)
+            cell.margin_top = cell.margin_bottom = 0
+            cell.vertical_anchor = MSO_ANCHOR.MIDDLE
+            para = cell.text_frame.paragraphs[0]
+            para.alignment = PP_ALIGN.CENTER
+            run = para.add_run()
+            run.text = text
+            run.font.size, run.font.bold, run.font.name = Pt(size), bold, font
+            run.font.color.rgb = RGBColor.from_string(color)
+
+
 def sample(prs):
     slide(prs, "Title", title="Universitas Airlangga Theme", p1="A Professional PowerPoint Template",
           p13="Rizqy Amelia Zein", p14="Department of Psychology, Universitas Airlangga", p15="13 September 2026")
-    slide(prs, "Agenda", title="Agenda", p20="Background & Motivation", p21="Research Methodology",
-          p22="Findings & Discussion", p23="Conclusions", p24="Q&A")
+    slide(prs, "Agenda", title="Agenda", p1=["Background & Motivation", "Research Methodology",
+          "Findings & Discussion", "Conclusions", "Q&A"])
     slide(prs, "Content", title="Introduction", p1=[
         "This is a sample presentation using the Universitas Airlangga template.",
         "Clean, professional design", "Official UNAIR branding", "Easy to customize",
@@ -490,6 +562,7 @@ def sample(prs):
     s = slide(prs, "Title Only", title="Tables")
     rows = [("Variable", "Mean", "SD", "N"), ("Age", "25.3", "4.2", "150"), ("Score", "78.5", "12.1", "150"), ("Hours", "5.7", "1.8", "150")]
     tbl = s.shapes.add_table(4, 4, Inches(ML), Inches(1.8), Inches(CW), Inches(2.6)).table
+    tbl._tbl.tblPr.find(qn("a:tableStyleId")).text = BRAND_TABLE_STYLE
     for r, row in enumerate(rows):
         for c, v in enumerate(row):
             cell = tbl.cell(r, c)
@@ -505,19 +578,17 @@ def sample(prs):
         "Results support the proposed mechanism"], p10=A / "art_blue.jpg")
     slide(prs, "Image + Text", p10=A / "art_yellow.jpg", title="Data Collection",
           p1="Field data were gathered across three sites using a standardized protocol, with inter-rater reliability checks throughout.")
-    slide(prs, "Text + Shaded Box", title="Overview", p10="A quick summary before we dive into the details.",
-          p11="This study examines how open science practices affect replication rates in psychological research, drawing on a pre-registered, multi-site design.")
-    slide(prs, "Three Columns", title="Our Pillars", p10="Three principles guide this research program.",
-          p30=A / "FaGraduationCap.png", p31=A / "FaHandshake.png", p32=A / "FaChartBar.png",
-          p40="Rigor", p41="Collaboration", p42="Openness",
-          p50="Pre-registered designs and transparent analysis pipelines.",
-          p51="Multi-site partnerships across Indonesian universities.",
-          p52="Data, code, and materials shared on publication.")
-    slide(prs, "Overview Grid", title="Campus Highlights", p10=A / "art_a.jpg", p11=A / "art_b.jpg", p12=A / "art_c.jpg",
+    slide(prs, "Text + Shaded Box", title="Overview", p15="A quick summary before we dive into the details.",
+          p16="This study examines how open science practices affect replication rates in psychological research, drawing on a pre-registered, multi-site design.")
+    s = slide(prs, "Three Columns", title="Our Pillars", p10="Three principles guide this research program.")
+    columns_table(s, [("🎓", "Rigor", "Pre-registered designs and transparent analysis pipelines."),
+                      ("🤝", "Collaboration", "Multi-site partnerships across Indonesian universities."),
+                      ("📊", "Openness", "Data, code, and materials shared on publication.")])
+    slide(prs, "Overview Grid", title="Campus Highlights", p15=A / "art_a.jpg", p16=A / "art_b.jpg", p17=A / "art_c.jpg",
           p20="Main Campus, Surabaya", p21="Research Laboratory", p22="Student Life")
-    slide(prs, "Quote", p10="Not everything that counts can be counted, and not everything that can be counted counts.",
+    slide(prs, "Quote", title="On what counts", p10="Not everything that counts can be counted, and not everything that can be counted counts.",
           p11="— William Bruce Cameron, Informal Sociology (1963)")
-    s = slide(prs, "Quote (Dark / Photo)",
+    s = slide(prs, "Quote (Dark / Photo)", title="Campbell's law",
               p10="The more any quantitative social indicator is used for social decision-making, the more subject it will be to corruption pressures.",
               p11="— Donald T. Campbell (1976)")
     rid = s.part.get_or_add_image_part(str(A / "art_photo.jpg"))[1]
@@ -531,7 +602,7 @@ def sample(prs):
 
 if __name__ == "__main__":
     import io, zipfile
-    tpl = new_presentation("Short presentation title")
+    tpl = new_presentation()
     buf = io.BytesIO()
     tpl.save(buf)
     # A .potx is the same package with the template content type on presentation.xml.
@@ -542,7 +613,7 @@ if __name__ == "__main__":
                 data = data.replace(CT.PML_PRESENTATION_MAIN.encode(), CT.PML_TEMPLATE_MAIN.encode())
             dst.writestr(item, data)
 
-    deck = new_presentation("UNAIR PowerPoint Template")
+    deck = new_presentation()
     sample(deck)
     deck.save(OUT / "unair-sample.pptx")
     print("wrote", OUT)
