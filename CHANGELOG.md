@@ -19,7 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README: new Troubleshooting section; updated GitHub Pages note.
 
 ### Removed
-- `skills/` and `.claude/settings.local.json`, which were never meant to be in the repository (both were already in `.gitignore`).
 - The `docs/_extensions/` logo copies and the matching `resources` entries in `_quarto.yml`, no longer needed.
 
 ## [2.0.0] - 2026-09-13
