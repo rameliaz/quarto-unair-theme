@@ -41,7 +41,11 @@ $code-color: $unair-blue;
   // lines up with the tip of the h2 yellow rule (which extends to that
   // same edge on a default slide — no side padding on the section).
   right: 0 !important;
-  max-height: 80px;
+  // !important so Reveal's and Quarto's generic `img` sizing rules can't
+  // enlarge the logo; the per-layout overrides below are more specific.
+  max-height: 80px !important;
+  max-width: 200px !important;
+  object-fit: contain;
   z-index: 100;
   margin-top: 0 !important;
   padding-top: 0 !important;
@@ -85,6 +89,10 @@ $code-color: $unair-blue;
   > h1, > h2 {
     position: relative;
     z-index: 1;
+  }
+
+  h1, h2 {
+    color: $unair-white !important;
   }
 }
 

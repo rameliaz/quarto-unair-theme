@@ -1,0 +1,13 @@
+# Files `quarto use template rameliaz/quarto-unair-theme` should NOT copy into
+# a new project. The extension itself (_extensions/) and example.qmd are kept.
+.github/
+.claude/
+docs/
+img/
+pptx/
+skills/
+CHANGELOG.md
+CONTRIBUTING.md
+QUICKSTART.md
+README.md
+AGENTS.md

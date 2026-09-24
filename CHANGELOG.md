@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-09-24
+
+### Fixed
+- Logos were missing whenever the rendered page didn't sit next to `_extensions/`: decks in a subfolder, projects with `output-dir`, `embed-resources: true`, or `quarto add` installs (`_extensions/rameliaz/unair/`) rendered to another folder. `unair.lua` now embeds both logos in the page, so they no longer depend on where the output lands. The logo files were downscaled from 8855 px to 1600 px wide (still 4× their largest on-screen size) to keep pages small.
+- In PDF export, long quotes and agenda lists were only shrunk to fit on the slide that happened to be current; every other page was cut off. The print view now fits all of them.
+- The sidebar slide number now follows Reveal's own format: `slide-number: h.v` (e.g. with `navigation-mode: vertical`) shows `2.1`, `2.2`, … like Reveal's counter instead of a flat count.
+
+### Changed
+- The inline `<style>` block in `theme.html` moved into `airlangga.scss`; the rendered slides are unchanged.
+- `quarto use template` no longer copies `docs/`, `pptx/`, `img/`, `.github/` or the project's own docs into new projects (new `.quartoignore`).
+- `pptx/src/` now pins its dependencies (`package-lock.json`, `requirements.txt`).
+- README: new Troubleshooting section; updated GitHub Pages note.
+
+### Removed
+- `skills/` and `.claude/settings.local.json`, which were never meant to be in the repository (both were already in `.gitignore`).
+- The `docs/_extensions/` logo copies and the matching `resources` entries in `_quarto.yml`, no longer needed.
+
 ## [2.0.0] - 2026-09-13
 
 ### ⚠️ Breaking

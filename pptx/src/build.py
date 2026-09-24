@@ -464,7 +464,7 @@ def fill(ph, items):
             r = p.add_run()
             r.text = text
             if fmt.get("b"): r.font.bold = True
-            if fmt.get("color"): r.font.color.rgb = __import__("pptx").dml.color.RGBColor.from_string(fmt["color"])
+            if fmt.get("color"): r.font.color.rgb = RGBColor.from_string(fmt["color"])
             if fmt.get("buNone"):
                 pPr = p._p.get_or_add_pPr()
                 pPr.set("marL", "0"); pPr.set("indent", "0")
@@ -551,7 +551,7 @@ def sample(prs):
         x = ML + i * (cw + 0.4)
         shp = s.shapes.add_shape(5, Inches(x), Inches(1.9), Inches(cw), Inches(3.0))  # rounded rectangle
         shp.adjustments[0] = 0.04
-        shp.fill.solid(); shp.fill.fore_color.rgb = __import__("pptx").dml.color.RGBColor.from_string(c)
+        shp.fill.solid(); shp.fill.fore_color.rgb = RGBColor.from_string(c)
         shp.line.fill.background(); shp.shadow.inherit = False
         tb = s.shapes.add_textbox(Inches(x), Inches(5.1), Inches(cw), Inches(1.0))
         tb.text_frame.margin_left = tb.text_frame.margin_right = 0

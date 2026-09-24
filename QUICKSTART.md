@@ -26,7 +26,7 @@ cd your-project
 quarto add rameliaz/quarto-unair-theme
 ```
 
-> 📄 **Hosting on GitHub Pages:** if you publish your rendered slides from a `docs/` folder, add an empty `.nojekyll` file to it. Without it, GitHub Pages runs the output through Jekyll, which ignores folders starting with `_` (like `_extensions/`) and breaks the theme's assets.
+> 📄 **Hosting on GitHub Pages:** if you publish your rendered slides from a `docs/` folder, add an empty `.nojekyll` file to it so GitHub Pages serves the output as-is instead of running it through Jekyll.
 >
 > To have Quarto copy it in on every render instead of doing it by hand, put the empty `.nojekyll` file in your project root and list it under `resources` in `_quarto.yml`:
 > ```yaml
