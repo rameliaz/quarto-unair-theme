@@ -58,19 +58,21 @@ Thank you for considering contributing to this project! 🎉
 
 Before submitting PR, test:
 
-- [ ] Theme renders correctly with example.qmd
-- [ ] Logos appear on all slides (except title)
-- [ ] White logo switches on blue background
-- [ ] Section dividers display correctly
-- [ ] Tables, code blocks, callouts styled properly
-- [ ] No console errors
-- [ ] Works with `quarto install extension`
+- [ ] `quarto render example.qmd` finishes without warnings
+- [ ] Logos appear on every slide except the agenda, quote and overview slides (centered cover logo on the title slide)
+- [ ] White logo on dark slides (blue dividers, the closing slide)
+- [ ] Brand sidebar and its slide number show on content slides only
+- [ ] Section dividers, tables, code blocks and callouts look right
+- [ ] No console errors, also on a phone-width window (Reveal's scroll view)
+- [ ] Works when installed with `quarto add` into another project
 
 ### Brand Compliance
 
 Changes must follow UNAIR 2025 Brand Guidelines:
 - Primary color: #14497F (UNAIR Blue)
 - Accent color: #FFCB05 (UNAIR Yellow)
+- Complementary color: #E6282B (UNAIR Red), as an accent only, never for alerts or warnings
+- Otherwise only black and white
 - Typography: Segoe UI / Inter
 - Logo placement: per guidelines
 
@@ -78,11 +80,17 @@ Changes must follow UNAIR 2025 Brand Guidelines:
 
 ```
 quarto-unair-theme/
-├── _extensions/unair/    # Core theme files
+├── _extensions/unair/    # The extension
 │   ├── _extension.yml    # Extension config
 │   ├── airlangga.scss    # Styles
-│   └── theme.html        # JavaScript
-├── img/                  # Logo files
+│   ├── theme.html        # Logo, sidebar and shrink-to-fit JavaScript
+│   ├── unair.lua         # Embeds the logos, passes `short-title` to theme.html
+│   ├── keygraphic.svg    # Source of the sidebar key graphic
+│   ├── keypattern.svg    # Source of the batik strip
+│   └── logo*.png         # Logos
+├── pptx/                 # PowerPoint template and its build scripts
+├── docs/                 # Rendered demo for GitHub Pages
+├── img/snapshot.gif      # README preview
 ├── example.qmd           # Example presentation
 └── README.md             # Documentation
 ```

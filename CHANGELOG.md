@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- Any slide with a `background-color` was styled as a section divider: a `## Heading {background-color="..."}` content slide lost its layout and sidebar, and got white headings even on a light colour. Only level-1 heading slides (`# Heading`) with a background colour are dividers now. Headings turn white, and the logo switches to the white version, on any dark background (as measured by Reveal) instead of only on exactly `#14497F`; light backgrounds keep UNAIR-blue headings.
+- Code blocks were 16px wider than the slide (Quarto's `width: 100%` plus the theme's padding and border).
+- On phone-width screens (Reveal's scroll view) a stray sidebar was drawn over the top of the page, on empty placeholder sections Reveal leaves behind.
+- Callout borders and icons used Bootstrap blue, amber and red. They now use UNAIR blue (note, tip), yellow (warning, caution) and black (important); red is no longer used as an alert colour, per the guideline.
+- Link hover colour was UNAIR yellow, about 1.6:1 contrast on white; it is now a darker blue. The footer text is darker too.
+- `embed-resources: true` printed 404 warnings for the Google Fonts `preconnect` hints; those hints are gone.
+
+### Changed
+- `quarto use template` no longer copies this repo's `_quarto.yml`, whose `output-file: index.html` sent every deck in a new project to the same file.
+- Font Awesome is loaded with a subresource-integrity hash.
+- README: slide layout reference table, offline/icons note, corrected PowerPoint sidebar instructions. CONTRIBUTING: current checklist and project structure.
+
+### Removed
+- `img/logo.png` and `img/logo_white.png`, unused since 2.0.1.
+
 ## [2.0.1] - 2026-09-24
 
 ### Fixed
@@ -108,15 +126,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Logo placement per brand guidelines
 - Minimum clearance and sizing standards
 
-## [Unreleased]
-
-### Planned
-- Additional callout styles
-- More color theme variants
-- Progress bar customization options
-- Speaker notes styling
-- Print CSS improvements
-
 ---
 
 **Legend:**
@@ -126,3 +135,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Removed` - Removed features
 - `Fixed` - Bug fixes
 - `Security` - Security improvements
+
+[Unreleased]: https://github.com/rameliaz/quarto-unair-theme/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/rameliaz/quarto-unair-theme/compare/v2.0.0...v2.0.1
+[2.0.0]: https://github.com/rameliaz/quarto-unair-theme/compare/v1.1.0...v2.0.0
+[1.1.0]: https://github.com/rameliaz/quarto-unair-theme/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/rameliaz/quarto-unair-theme/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/rameliaz/quarto-unair-theme/releases/tag/v1.0.0

@@ -1,5 +1,11 @@
 # Files `quarto use template rameliaz/quarto-unair-theme` should NOT copy into
-# a new project. The extension itself (_extensions/) and example.qmd are kept.
+# a new project. Only the extension itself (_extensions/) and example.qmd are
+# meant to be copied; Quarto already skips dotfiles, README and LICENSE.
+# _quarto.yml only configures this repo's GitHub Pages demo: its
+# `output-file: index.html` would send every deck in a user's project to the
+# same file, and its `render` list would build only example.qmd.
+_quarto.yml
+unair_corporate_branding/
 .github/
 .claude/
 docs/

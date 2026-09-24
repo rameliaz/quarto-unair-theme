@@ -12,7 +12,7 @@ A reproducible Quarto Revealjs presentation theme following Universitas Airlangg
 - ✅ **Smart Logo Management** - Automatic logo placement with white variant for dark backgrounds
 - ✅ **Brand Sidebar** - Right-edge bar with the UNAIR key graphic, your talk's short title and the slide number, as in the guideline's page frame
 - ✅ **Pre-styled Components** - Section headers, callouts, tables, and code blocks
-- ✅ **11 Slide Layout Formats** - Agenda, section dividers, image bleeds, 3-columns, quotes, and more
+- ✅ **10 Slide Layouts** - Section dividers, agenda, image bleeds, shaded box, 3 columns, image grid, two quote styles, and a closing slide
 - ✅ **Easy Customization** - Simple to adapt while maintaining brand consistency
 
 ## 📸 Preview
@@ -48,6 +48,25 @@ Then add `format: unair-revealjs` to your `.qmd` file's YAML header. See [`QUICK
 > ```
 
 To pin a release instead of tracking the latest commit, add a tag: `quarto add rameliaz/quarto-unair-theme@v2.0.1`.
+
+## 🧩 Slide Layouts
+
+Put the class on the heading that starts the slide, e.g. `## Agenda {.agenda-slide}`. [`example.qmd`](example.qmd) has the full markup for each one.
+
+| Layout | Markup |
+|---|---|
+| Section divider | `# Heading {background-color="#14497F"}`; add a `::: {.section-number}` block (e.g. `01`) for a big chapter number |
+| Agenda | `## Agenda {.agenda-slide}` followed by a numbered list |
+| Text + image | `## Title {.text-image}` with a two-column `::: columns` block, image in the second column |
+| Image + text | `## {.image-text}`, image in the first column |
+| Shaded box | `## Title {.text-slide-bg}` with `::: {.lead}` and `::: {.content-box}` blocks |
+| Three columns | `## Title {.columns-slide}` with `::: {.columns-area}` holding three `::: {.col-item}` blocks |
+| Image grid | `## Title {.overview-slide}` with `::: {.overview-grid}` holding three `::: {.overview-item}` blocks |
+| Quote | `## Quote {.quote-slide}` with a `::: {.quote-bubble}` block (blockquote plus `::: {.quote-author}`) |
+| Quote on a photo | `## Quote {.quote-slide-dark data-background-image="photo.jpg"}`, same content |
+| Closing | `## Thank you! {.closing-slide}`, see below |
+
+Only level-1 headings (`#`) with a `background-color` become section dividers. A `## Heading {background-color="..."}` slide keeps the normal content layout. On a dark colour it switches to white text and the white logo.
 
 ## 🎨 Brand Sidebar
 
@@ -95,7 +114,7 @@ Not using Quarto? The same design is available as a PowerPoint template, with th
 - ⬇️ [**unair-template.potx**](https://github.com/rameliaz/quarto-unair-theme/raw/main/pptx/unair-template.potx): the template. Open it and PowerPoint starts a new, untitled presentation based on it.
 - ⬇️ [**unair-sample.pptx**](https://github.com/rameliaz/quarto-unair-theme/raw/main/pptx/unair-sample.pptx): a 15-slide sample deck that uses every layout, for reference.
 
-Add slides with **Home → New Slide** and pick a layout: Title, Section Divider, Content, Two Content, Title Only, Agenda, Text + Image, Image + Text, Text + Shaded Box, Three Columns, Overview Grid, Quote, Quote (Dark / Photo) or Closing. The running title in the sidebar is set on the slide master (**View → Slide Master**).
+Add slides with **Home → New Slide** and pick a layout: Title, Section Divider, Content, Two Content, Title Only, Content (no sidebar), Agenda, Text + Image, Image + Text, Text + Shaded Box, Three Columns, Overview Grid, Quote, Quote (Dark / Photo) or Closing. The running title in the sidebar is the slide footer: **Insert → Header & Footer**, tick *Footer*, type the short title and click **Apply to All**. See [`pptx/README.md`](pptx/README.md) for more.
 
 The template uses Segoe UI, which comes with Windows. On a Mac, install [Inter](https://fonts.google.com/specimen/Inter), the guideline's alternative typeface, or PowerPoint will substitute another font.
 
@@ -115,6 +134,8 @@ The build script calls `python`; where only `python3` exists (some macOS/Linux s
 
 **Wrong font.** The theme uses Segoe UI where it's installed (Windows) and loads Inter from Google Fonts elsewhere. Offline, or where Google Fonts is blocked, the browser falls back to a system sans-serif; install Inter locally to avoid that.
 
+**Icons missing.** The Font Awesome icons (and the Inter font) load from a CDN, so they need an internet connection. To present offline, render with `embed-resources: true`, which saves them into the HTML file.
+
 **Text cut off on a quote or agenda slide.** Long quotes and long agenda items shrink to fit, down to half (quotes) or 40% (agenda) of their normal size. Anything longer than that is still cut off: shorten the text or split the slide.
 
 ## 🏗️ Project Structure
@@ -128,12 +149,10 @@ quarto-unair-theme/
 │       ├── theme.html          # Logo, sidebar and shrink-to-fit JS
 │       ├── unair.lua           # Embeds the logos and passes `short-title` to theme.html
 │       ├── keygraphic.svg      # UNAIR key graphic (source of the sidebar icon)
-│       ├── keypattern.svg      # Batik pattern tile (source of the closing-slide strip)
+│       ├── keypattern.svg      # Batik pattern tile (source of the title/closing-slide strip)
 │       ├── logo.png            # Regular logo
 │       └── logo_white.png      # White logo (dark backgrounds)
 ├── img/
-│   ├── logo.png                # Logo for local preview
-│   ├── logo_white.png          # White logo for local preview
 │   └── snapshot.gif            # Preview animation
 ├── pptx/
 │   ├── unair-template.potx      # PowerPoint template
@@ -141,7 +160,7 @@ quarto-unair-theme/
 │   └── src/                     # Build scripts for both files
 ├── docs/                       # Rendered GitHub Pages output
 ├── example.qmd                 # Working demo presentation
-├── _quarto.yml                 # Project configuration
+├── _quarto.yml                 # Config for the GitHub Pages demo (not copied by `quarto use template`)
 ├── .quartoignore               # Files `quarto use template` leaves out
 ├── README.md
 ├── QUICKSTART.md                # 5-minute setup guide
