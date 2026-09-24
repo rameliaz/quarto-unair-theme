@@ -26,22 +26,30 @@ function _unairIsPrinting() {
     (Reveal.isPrintingPDF && Reveal.isPrintingPDF()));
 }
 
-// Single unified function to manage all logos
+// The slides to decorate. Reveal.getSlides() returns leaf slides only, so
+// vertical-stack wrappers never get a logo or sidebar. In the phone scroll
+// view (narrow screens) Reveal leaves a few empty placeholder <section>s
+// outside its pages that getSlides() still returns; decorating those drew a
+// stray sidebar over the top of the page.
+function _unairSlides() {
+  var slides = Reveal.getSlides();
+  if (!(Reveal.isScrollView && Reveal.isScrollView())) return slides;
+  return slides.filter(function(slide) { return slide.closest('.scroll-page'); });
+}
+
+// A section divider: a level-1 heading slide (`# Heading`), which Quarto
+// gives the class `title-slide`, with a background colour. Content slides with
+// a background colour (`## Heading {background-color=...}`) aren't dividers.
+function _unairIsDivider(slide) {
+  return slide.classList.contains('title-slide') && slide.hasAttribute('data-background-color');
+}
+
 function manageLogos() {
   // unair.lua couldn't embed the logos (it logs a warning at render time);
   // an <img> with an empty src would show as a broken image.
   if (!UNAIR_LOGO) return;
 
-  const slides = document.querySelectorAll('.reveal .slides section');
-
-  slides.forEach(function(slide) {
-    // Vertical-stack wrappers aren't slides themselves; a logo here would
-    // show on top of each child slide's own logo.
-    if (slide.querySelector('section')) {
-      slide.querySelectorAll(':scope > .slide-logo').forEach(logo => logo.remove());
-      return;
-    }
-
+  _unairSlides().forEach(function(slide) {
     // Handle the real title/cover slide. Quarto gives it id="title-slide"
     // but class "quarto-title-block" — NOT class "title-slide". That class
     // is actually assigned by Quarto to any heading-only section-divider
@@ -74,12 +82,13 @@ function manageLogos() {
       existingLogos.forEach(logo => logo.remove());
     }
 
-    // White logo on UNAIR-blue slides: blue dividers and the closing slide
-    const bgColor = slide.getAttribute('data-background-color');
-    const logoSrc = (bgColor === '#14497F' || bgColor === '#14497f' || slide.classList.contains('closing-slide'))
-      ? UNAIR_LOGO_WHITE
-      : UNAIR_LOGO;
-    
+    // White logo on dark slides. Reveal sets `has-dark-background` from the
+    // background's brightness (dividers, the closing slide's blue page, any
+    // dark `background-color`); the class check covers the closing slide
+    // before Reveal has measured it.
+    const dark = slide.classList.contains('has-dark-background') || slide.classList.contains('closing-slide');
+    const logoSrc = dark ? UNAIR_LOGO_WHITE : UNAIR_LOGO;
+
     // This variant wasn't embedded (unair.lua warned at render time).
     if (!logoSrc) {
       existingLogos.forEach(logo => logo.remove());
@@ -159,8 +168,8 @@ function fitCoverFonts() {
 // Deliberately uses clientHeight/scrollHeight rather than
 // getBoundingClientRect: those are layout metrics, unaffected by the CSS
 // transform Reveal uses to scale the whole deck to fit the viewport, so the
-// same authored-pixel comparison holds at any zoom level (see layoutSidebar
-// above for the same distinction). Only meaningful while the element is
+// same authored-pixel comparison holds at any zoom level (layoutSidebar
+// below makes the same distinction). Only meaningful while the element is
 // actually laid out (not `display:none`) — i.e. while its slide is current.
 function _unairShrinkToFit(el, containerEl, opts) {
   if (!el || !containerEl) return;
@@ -238,7 +247,7 @@ function _unairShortTitle() {
 }
 
 // Slides that keep their own full-bleed treatment and get no sidebar.
-// Section dividers are matched by data-background-color, the cover by id
+// Section dividers are matched by _unairIsDivider(), the cover by id
 // (see manageLogos above for why not by class).
 var UNAIR_SIDEBAR_EXCLUDED_CLASSES = ['quote-slide', 'quote-slide-dark', 'agenda-slide', 'closing-slide', 'no-sidebar'];
 
@@ -275,10 +284,10 @@ function manageSidebar() {
   var showNumber = !!Reveal.getConfig().slideNumber;
   var label = _unairShortTitle();
 
-  Reveal.getSlides().forEach(function(slide) {
+  _unairSlides().forEach(function(slide) {
     var bar = slide.querySelector(':scope > .unair-sidebar');
     var excluded = slide.id === 'title-slide' ||
-      slide.hasAttribute('data-background-color') ||
+      _unairIsDivider(slide) ||
       UNAIR_SIDEBAR_EXCLUDED_CLASSES.some(function(c) { return slide.classList.contains(c); });
 
     if (excluded) {

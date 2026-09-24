@@ -93,4 +93,4 @@ Your presentation will open in your browser.
 
 ---
 
-**Questions?** Open an issue or check the [troubleshooting section](README.md#-troubleshooting) in the README.
+**Questions?** Open an issue or see the Troubleshooting section of the [README](README.md).

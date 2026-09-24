@@ -57,7 +57,7 @@ The theme uses official Universitas Airlangga colors:
 
 - [UNAIR Blue (#14497F)]{.unair-blue} - Primary
 - [UNAIR Yellow (#FFCB05)]{.bg-unair-yellow} - Accent
-- Red (#E6282B) - Alerts
+- [UNAIR Red (#E6282B)]{.unair-red} - Accent only (the logo's droplet), not for alerts
 
 ## Code Examples
 
@@ -85,15 +85,15 @@ ggplot(mtcars, aes(x = wt, y = mpg)) +
 ## Callout Boxes
 
 ::: {.callout-note}
-**Note:** This is an informative callout box with important context.
+This is an informative callout box with important context.
 :::
 
 ::: {.callout-warning}
-**Warning:** Pay attention to this important notice.
+Pay attention to this important notice.
 :::
 
 ::: {.callout-important}
-**Important:** This is critical information that requires action.
+This is critical information that requires action.
 :::
 
 ## Lists
