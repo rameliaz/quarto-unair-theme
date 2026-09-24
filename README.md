@@ -39,15 +39,15 @@ quarto add rameliaz/quarto-unair-theme
 
 Then add `format: unair-revealjs` to your `.qmd` file's YAML header. See [`QUICKSTART.md`](QUICKSTART.md) for a 5-minute setup walkthrough.
 
-> 📄 **Hosting on GitHub Pages:** if you publish your rendered slides from a `docs/` folder, add an empty `.nojekyll` file to it. Without it, GitHub Pages runs the output through Jekyll, which ignores folders starting with `_` (like `_extensions/`) and breaks the theme's assets.
->
-> To have Quarto copy it in on every render instead of doing it by hand, put the empty `.nojekyll` file in your project root and list it under `resources` in `_quarto.yml`:
+> 📄 **Hosting on GitHub Pages:** the theme embeds its logos in each rendered page, so the slides work from any folder, with `output-dir`, and with `embed-resources: true`. GitHub Pages still runs your output through Jekyll unless the folder contains an empty `.nojekyll` file; Quarto recommends adding one. To have Quarto copy it in on every render, put the empty file in your project root and list it under `resources` in `_quarto.yml`:
 > ```yaml
 > project:
 >   output-dir: docs
 >   resources:
 >     - .nojekyll
 > ```
+
+To pin a release instead of tracking the latest commit, add a tag: `quarto add rameliaz/quarto-unair-theme@v2.0.1`.
 
 ## 🎨 Brand Sidebar
 
@@ -99,11 +99,23 @@ Add slides with **Home → New Slide** and pick a layout: Title, Section Divider
 
 The template uses Segoe UI, which comes with Windows. On a Mac, install [Inter](https://fonts.google.com/specimen/Inter), the guideline's alternative typeface, or PowerPoint will substitute another font.
 
-Both files are generated from [`pptx/src/`](pptx/src/). To rebuild them after changing the design, you need Node.js and Python with `python-pptx`:
+Both files are generated from [`pptx/src/`](pptx/src/). To rebuild them after changing the design, you need Node.js and Python. `package-lock.json` and `requirements.txt` pin the dependency versions, so rebuilds are repeatable:
 
 ```bash
-cd pptx/src && npm install && npm run build
+cd pptx/src && npm ci && pip install -r requirements.txt && npm run build
 ```
+
+The build script calls `python`; where only `python3` exists (some macOS/Linux setups), run `node assets.js && python3 build.py` instead.
+
+## 🛠️ Troubleshooting
+
+**No logo on the slides.** The logos are embedded by `unair.lua` at render time. If you see the warning `unair: could not read logo.png`, the extension folder is incomplete: reinstall with `quarto add rameliaz/quarto-unair-theme`. Theme versions before 2.0.1 loaded the logos from `_extensions/` next to the rendered page, which broke with `output-dir`, decks in subfolders and `embed-resources`; update the extension if you still see that.
+
+**Broken layout on GitHub Pages.** Add an empty `.nojekyll` file to the published folder (see *Hosting on GitHub Pages* above).
+
+**Wrong font.** The theme uses Segoe UI where it's installed (Windows) and loads Inter from Google Fonts elsewhere. Offline, or where Google Fonts is blocked, the browser falls back to a system sans-serif; install Inter locally to avoid that.
+
+**Text cut off on a quote or agenda slide.** Long quotes and long agenda items shrink to fit, down to half (quotes) or 40% (agenda) of their normal size. Anything longer than that is still cut off: shorten the text or split the slide.
 
 ## 🏗️ Project Structure
 
@@ -113,8 +125,8 @@ quarto-unair-theme/
 │   └── unair/
 │       ├── _extension.yml      # Extension registration
 │       ├── airlangga.scss      # Theme styles (SCSS)
-│       ├── theme.html          # Logo + sidebar management JS, inline styles
-│       ├── unair.lua           # Passes the `short-title` field to theme.html
+│       ├── theme.html          # Logo, sidebar and shrink-to-fit JS
+│       ├── unair.lua           # Embeds the logos and passes `short-title` to theme.html
 │       ├── keygraphic.svg      # UNAIR key graphic (source of the sidebar icon)
 │       ├── keypattern.svg      # Batik pattern tile (source of the closing-slide strip)
 │       ├── logo.png            # Regular logo
@@ -130,6 +142,7 @@ quarto-unair-theme/
 ├── docs/                       # Rendered GitHub Pages output
 ├── example.qmd                 # Working demo presentation
 ├── _quarto.yml                 # Project configuration
+├── .quartoignore               # Files `quarto use template` leaves out
 ├── README.md
 ├── QUICKSTART.md                # 5-minute setup guide
 ├── CHANGELOG.md                 # Version history

@@ -4,8 +4,10 @@
   use Design → Browse for Themes to apply it to an existing one. Layouts appear
   under Home → Layout.
 - `unair-sample.pptx` — one example slide per layout.
-- `src/` — scripts that rebuild both files from `../_extensions/unair`
-  (`npm install && npm run build`, needs Node and `python-pptx`).
+- `src/` — scripts that rebuild both files from `../_extensions/unair`:
+  `npm ci && pip install -r requirements.txt && npm run build`. Needs Node and
+  Python; the build script calls `python`, so on systems where only `python3`
+  exists run `node assets.js && python3 build.py` instead.
 
 ## Sidebar text and slide numbers
 

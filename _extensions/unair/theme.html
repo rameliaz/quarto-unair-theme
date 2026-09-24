@@ -1,32 +1,37 @@
 <script>
-// Detect extension base path by probing for the logo file.
-// Stylesheet detection is unreliable: Quarto compiles extension SCSS into the
-// bundled theme CSS, so no _extensions/ path ever appears in document.styleSheets.
-var _unairExtPath = null;
+// Logos arrive as data URIs in <meta> tags written by unair.lua, so they work
+// wherever the rendered page ends up (subfolder, output-dir, embed-resources).
+function _unairMeta(name) {
+  var meta = document.querySelector('meta[name="' + name + '"]');
+  return meta ? meta.content : '';
+}
 
-function _resolveUnairExtPath(callback) {
-  var candidates = [
-    '_extensions/rameliaz/unair/',
-    '_extensions/unair/'
-  ];
+// Every slide gets its own <img>, so hand them one short blob: URL each rather
+// than repeating the ~150 KB data URI in every src attribute.
+function _unairLogoUrl(name) {
+  var uri = _unairMeta(name);
+  var match = uri.match(/^data:([^;]+);base64,(.*)$/);
+  if (!match || !window.URL || !URL.createObjectURL) return uri;
+  var binary = atob(match[2]);
+  var bytes = new Uint8Array(binary.length);
+  for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return URL.createObjectURL(new Blob([bytes], { type: match[1] }));
+}
 
-  function probe(idx) {
-    if (idx >= candidates.length) {
-      _unairExtPath = candidates[0];
-      callback();
-      return;
-    }
-    var img = new Image();
-    img.onload = function() { _unairExtPath = candidates[idx]; callback(); };
-    img.onerror = function() { probe(idx + 1); };
-    img.src = candidates[idx] + 'logo.png';
-  }
+var UNAIR_LOGO = _unairLogoUrl('unair-logo');
+var UNAIR_LOGO_WHITE = _unairLogoUrl('unair-logo-white');
 
-  probe(0);
+function _unairIsPrinting() {
+  return !!((Reveal.isPrintView && Reveal.isPrintView()) ||
+    (Reveal.isPrintingPDF && Reveal.isPrintingPDF()));
 }
 
 // Single unified function to manage all logos
 function manageLogos() {
+  // unair.lua couldn't embed the logos (it logs a warning at render time);
+  // an <img> with an empty src would show as a broken image.
+  if (!UNAIR_LOGO) return;
+
   const slides = document.querySelectorAll('.reveal .slides section');
 
   slides.forEach(function(slide) {
@@ -50,7 +55,7 @@ function manageLogos() {
       // Add centered logo if it doesn't exist
       if (!slide.querySelector('.title-slide-logo')) {
         const titleLogo = document.createElement('img');
-        titleLogo.src = _unairExtPath + 'logo.png';
+        titleLogo.src = UNAIR_LOGO;
         titleLogo.className = 'title-slide-logo';
         titleLogo.alt = 'Universitas Airlangga Logo';
         // The logo has no intrinsic size until it loads, so a pre-load
@@ -72,9 +77,15 @@ function manageLogos() {
     // White logo on UNAIR-blue slides: blue dividers and the closing slide
     const bgColor = slide.getAttribute('data-background-color');
     const logoSrc = (bgColor === '#14497F' || bgColor === '#14497f' || slide.classList.contains('closing-slide'))
-      ? _unairExtPath + 'logo_white.png'
-      : _unairExtPath + 'logo.png';
+      ? UNAIR_LOGO_WHITE
+      : UNAIR_LOGO;
     
+    // This variant wasn't embedded (unair.lua warned at render time).
+    if (!logoSrc) {
+      existingLogos.forEach(logo => logo.remove());
+      return;
+    }
+
     // If exactly one logo exists, just update its source
     if (existingLogos.length === 1) {
       existingLogos[0].src = logoSrc;
@@ -183,28 +194,36 @@ function _unairShrinkToFit(el, containerEl, opts) {
 // breakpoints (`:has(li:nth-child(n))`), which handle item *count* but not
 // long items that wrap to extra lines; this adds a dynamic pass on top of
 // whatever size the CSS breakpoints land on.
-// Only the current slide's content is laid out (non-`display:none`) at any
-// given time, so — unlike fitCoverFonts, which targets the title/closing
-// slides unconditionally by id/class — these run against whichever slide
-// `slidechanged` just made current.
-function fitOverflowContent() {
-  var current = Reveal.getCurrentSlide && Reveal.getCurrentSlide();
-  if (!current) return;
-
-  if (current.classList.contains('quote-slide') || current.classList.contains('quote-slide-dark')) {
-    var bubble = current.querySelector(':scope > .quote-bubble');
+// In the live deck only the current slide's content is laid out
+// (non-`display:none`) at any given time, so — unlike fitCoverFonts, which
+// targets the title/closing slides unconditionally by id/class — this runs
+// against whichever slide `slidechanged` just made current. The print view
+// (PDF export) lays out every slide at once, so there it fits all of them.
+function _unairFitSlide(slide) {
+  if (slide.classList.contains('quote-slide') || slide.classList.contains('quote-slide-dark')) {
+    var bubble = slide.querySelector(':scope > .quote-bubble');
     // 0.92: a little breathing room so the shrink target is reached just
     // before the text would actually touch the slide's top/bottom edge.
-    _unairShrinkToFit(bubble, current, { min: 0.5, step: 0.04, margin: 0.92 });
+    _unairShrinkToFit(bubble, slide, { min: 0.5, step: 0.04, margin: 0.92 });
   }
 
-  if (current.classList.contains('agenda-slide')) {
-    var ol = current.querySelector(':scope > ol');
+  if (slide.classList.contains('agenda-slide')) {
+    var ol = slide.querySelector(':scope > ol');
     // The `ol` is its own fixed-height box (absolutely positioned via
     // top/bottom in the SCSS), so it's both the shrinking element and the
     // container its own content must fit inside.
     _unairShrinkToFit(ol, ol, { min: 0.4, step: 0.04 });
   }
+}
+
+function fitOverflowContent() {
+  if (_unairIsPrinting()) {
+    Reveal.getSlides().forEach(_unairFitSlide);
+    return;
+  }
+
+  var current = Reveal.getCurrentSlide && Reveal.getCurrentSlide();
+  if (current) _unairFitSlide(current);
 }
 
 // Sidebar label: the talk's short title. Prefers the `short-title` YAML
@@ -223,6 +242,30 @@ function _unairShortTitle() {
 // (see manageLogos above for why not by class).
 var UNAIR_SIDEBAR_EXCLUDED_CLASSES = ['quote-slide', 'quote-slide-dark', 'agenda-slide', 'closing-slide', 'no-sidebar'];
 
+// The number Reveal itself would show for `slide`, following the same rules as
+// its internal slide-number controller: `h.v` / `h/v` formats, a
+// `slideNumber` function, and `data-visibility="uncounted"` slides. For the
+// `c/t` format (what `slide-number: true` gives in Quarto) only the count is
+// shown, since the yellow block has no room for the total.
+function _unairSlideNumber(slide) {
+  var config = Reveal.getConfig().slideNumber;
+  if (typeof config === 'function') {
+    var parts = config(slide);
+    return Array.isArray(parts) ? parts.join('') : String(parts);
+  }
+
+  var format = typeof config === 'string' ? config : 'h.v';
+  if (!/c/.test(format) && Reveal.getHorizontalSlides().length === 1) format = 'c';
+  var own = slide.dataset.visibility === 'uncounted' ? 0 : 1;
+
+  if (/c/.test(format)) return String(Reveal.getSlidePastCount(slide) + own);
+
+  var indices = Reveal.getIndices(slide);
+  var number = String(indices.h + own);
+  if (Reveal.isVerticalSlide(slide)) number += (format === 'h/v' ? '/' : '.') + (indices.v + 1);
+  return number;
+}
+
 // Brand sidebar on the right edge of each content slide, after the page
 // frame in the UNAIR guideline PDF: key graphic + the talk's short title on a
 // blue bar, slide number on a yellow block at the bottom.
@@ -232,7 +275,7 @@ function manageSidebar() {
   var showNumber = !!Reveal.getConfig().slideNumber;
   var label = _unairShortTitle();
 
-  Reveal.getSlides().forEach(function(slide, index) {
+  Reveal.getSlides().forEach(function(slide) {
     var bar = slide.querySelector(':scope > .unair-sidebar');
     var excluded = slide.id === 'title-slide' ||
       slide.hasAttribute('data-background-color') ||
@@ -254,8 +297,7 @@ function manageSidebar() {
       slide.appendChild(bar);
     }
     bar.querySelector('.unair-sidebar-label').textContent = label;
-    // Matches Reveal's own "c" count: the cover slide is 1.
-    bar.querySelector('.unair-sidebar-number').textContent = showNumber ? String(index + 1) : '';
+    bar.querySelector('.unair-sidebar-number').textContent = showNumber ? _unairSlideNumber(slide) : '';
     slide.classList.add('has-unair-sidebar');
   });
 }
@@ -270,11 +312,9 @@ var UNAIR_SIDEBAR_GAP = 32;    // $unair-sidebar-gap
 
 function layoutSidebar() {
   var reveal = Reveal.getRevealElement();
-  var printing = (Reveal.isPrintView && Reveal.isPrintView()) ||
-    (Reveal.isPrintingPDF && Reveal.isPrintingPDF());
   var offset = 0;
 
-  if (!printing) {
+  if (!_unairIsPrinting()) {
     var scale = Reveal.getScale() || 1;
     offset = Math.max(0, (reveal.getBoundingClientRect().width / scale - Reveal.getConfig().width) / 2);
   }
@@ -286,57 +326,30 @@ function layoutSidebar() {
   reveal.style.setProperty('--unair-sidebar-clearance', clearance + 'px');
 }
 
-// Initialize on page load — resolve path first, then wire up Reveal events
+// Initialize on page load. This file is included after the body, so by
+// DOMContentLoaded the Reveal script has run and the global exists.
 document.addEventListener('DOMContentLoaded', function() {
-  _resolveUnairExtPath(function() {
-    if (typeof Reveal !== 'undefined') {
-      if (Reveal.isReady()) {
-        manageSidebar();
-        layoutSidebar();
-        manageLogos();
-        fitCoverFonts();
-        fitOverflowContent();
-      } else {
-        Reveal.on('ready', manageSidebar);
-        Reveal.on('ready', layoutSidebar);
-        Reveal.on('ready', manageLogos);
-        Reveal.on('ready', fitCoverFonts);
-        Reveal.on('ready', fitOverflowContent);
-      }
-      Reveal.on('resize', layoutSidebar);
-      Reveal.on('resize', fitCoverFonts);
-      Reveal.on('resize', fitOverflowContent);
-      // Re-run on every slide change, like the logos: both are idempotent, and
-      // this self-heals the rare load where the sidebar went missing.
-      Reveal.on('slidechanged', manageSidebar);
-      Reveal.on('slidechanged', layoutSidebar);
-      Reveal.on('slidechanged', manageLogos);
-      Reveal.on('slidechanged', fitCoverFonts);
-      Reveal.on('slidechanged', fitOverflowContent);
-    } else {
-      setTimeout(manageLogos, 500);
-    }
-  });
+  if (typeof Reveal === 'undefined') return;
+
+  var onReady = [manageSidebar, layoutSidebar, manageLogos, fitCoverFonts, fitOverflowContent];
+  if (Reveal.isReady()) {
+    onReady.forEach(function(fn) { fn(); });
+  } else {
+    onReady.forEach(function(fn) { Reveal.on('ready', fn); });
+  }
+  Reveal.on('resize', layoutSidebar);
+  Reveal.on('resize', fitCoverFonts);
+  Reveal.on('resize', fitOverflowContent);
+  // Re-run on every slide change, like the logos: both are idempotent, and
+  // this self-heals the rare load where the sidebar went missing.
+  Reveal.on('slidechanged', manageSidebar);
+  Reveal.on('slidechanged', layoutSidebar);
+  Reveal.on('slidechanged', manageLogos);
+  Reveal.on('slidechanged', fitCoverFonts);
+  Reveal.on('slidechanged', fitOverflowContent);
+  // The print view (PDF export) finishes laying out every slide after
+  // 'ready'; measure again once it has.
+  Reveal.on('pdf-ready', fitCoverFonts);
+  Reveal.on('pdf-ready', fitOverflowContent);
 });
 </script>
-
-<style>
-/* Additional inline styles for logo */
-/* This block loads after airlangga.scss (include-after-body), so it must
-   agree with .reveal .slide-logo there or it silently wins the cascade. */
-.reveal .slide-logo {
-  position: absolute !important;
-  top: -1em !important;  /* Aligns with title */
-  right: 0 !important;  /* Flush with the h2 yellow rule's right tip */
-  max-height: 80px !important;
-  max-width: 200px !important;
-  z-index: 100 !important;
-  object-fit: contain;
-}
-
-/* Section title slide styling */
-.reveal section[data-background-color] h1,
-.reveal section[data-background-color] h2 {
-  color: white !important;
-}
-</style>
